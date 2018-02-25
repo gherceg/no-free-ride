@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <EditTextPreference
+        android:title="@string/pref_insurance_price_title"
+        android:key="@string/pref_insurance_price_key"
+        android:defaultValue="60"/>
+
+    <EditTextPreference
+        android:title="@string/pref_mpg_title"
+        android:key="@string/pref_mpg_key"
+        android:defaultValue="20"/>
+
+    <EditTextPreference
+        android:title="@string/pref_ppg_title"
+        android:key="@string/pref_ppg_key"
+        android:defaultValue="3.00"/>
+
+</PreferenceScreen>
