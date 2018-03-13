@@ -1,4 +1,4 @@
-package com.graham.nofreeride.Summary;
+package com.graham.nofreeride.summary_page;
 
 /**
  * Created by grahamherceg on 2/10/18.

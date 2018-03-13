@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import com.graham.nofreeride.Model.RideCalculator;
+import com.graham.nofreeride.utils.RideCalculator;
 import com.graham.nofreeride.R;
 
 /**

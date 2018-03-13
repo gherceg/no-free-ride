@@ -1,14 +1,9 @@
 package com.graham.nofreeride.Model;
 
 import android.Manifest;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationListener;
-import android.nfc.Tag;
-import android.preference.PreferenceManager;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
@@ -17,10 +12,8 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.graham.nofreeride.Home.HomeContract;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static android.content.ContentValues.TAG;
 
@@ -34,7 +27,6 @@ public class LocationTracker {
     Context context;
 
     LocationRequest locationRequest;
-    LocationListener locationListener;
     LocationCallback locationCallback;
 
 

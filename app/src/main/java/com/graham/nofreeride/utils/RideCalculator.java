@@ -1,4 +1,4 @@
-package com.graham.nofreeride.Model;
+package com.graham.nofreeride.utils;
 
 import android.location.Location;
 import android.util.Log;

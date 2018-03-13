@@ -14,14 +14,23 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:background="@color/colorAccent"
+        android:background="@drawable/main_button"
         android:text="@string/prepare_drive_btn_text"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.276" />
+        app:layout_constraintVertical_bias="0.347" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="138dp"
+        android:background="@color/colorPrimary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_miles_per_gallon"
@@ -31,6 +40,7 @@
         android:layout_marginTop="16dp"
         android:textAlignment="center"
         android:textSize="50sp"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/gl_one_third"
         app:layout_constraintStart_toStartOf="parent"
@@ -44,6 +54,7 @@
         android:layout_height="wrap_content"
         android:textAlignment="center"
         android:textSize="50sp"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toTopOf="@+id/textView7"
         app:layout_constraintLeft_toRightOf="@+id/gl_one_third"
         app:layout_constraintRight_toLeftOf="@+id/gl_two_thirds"
@@ -58,6 +69,7 @@
         android:layout_height="wrap_content"
         android:textAlignment="center"
         android:textSize="50sp"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="@+id/tv_price_per_gallon"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toRightOf="@id/gl_two_thirds"
@@ -70,6 +82,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="MPG"
+        android:textColor="@color/colorAccent"
         android:textAlignment="center"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="@+id/tv_miles_per_gallon"
@@ -81,6 +94,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Gas Price"
+        android:textColor="@color/colorAccent"
         android:textAlignment="center"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="@+id/tv_price_per_gallon"
@@ -93,6 +107,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Insurance"
+        android:textColor="@color/colorAccent"
         android:textAlignment="center"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="@+id/tv_insurance_per_month"

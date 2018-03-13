@@ -1,4 +1,4 @@
-package com.graham.nofreeride.Home;
+package com.graham.nofreeride.home_page;
 
 import android.Manifest;
 import android.app.Notification;
@@ -8,7 +8,6 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -19,28 +18,22 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.graham.nofreeride.HomeActivity;
+import com.graham.nofreeride.activities.HomeActivity;
 import com.graham.nofreeride.R;
-import com.graham.nofreeride.SettingsActivity;
+import com.graham.nofreeride.activities.SettingsActivity;
 import com.graham.nofreeride.riders.RidersFragment;
-import com.graham.nofreeride.utilities.LocationTrackingService;
-
-import org.w3c.dom.Text;
+import com.graham.nofreeride.utils.LocationTrackingService;
 
 import java.util.Locale;
-
-import static android.content.Context.NOTIFICATION_SERVICE;
 
 /**
  * Created by grahamherceg on 2/2/18.
@@ -75,7 +68,7 @@ public class HomeFragment extends Fragment implements HomeContract.view, View.On
     String mMPG;
     String mPPG;
 
-
+    Boolean mDriveInProgress;
 
 
     @Override
@@ -98,7 +91,16 @@ public class HomeFragment extends Fragment implements HomeContract.view, View.On
         mInsurancePrice = sharedPreferences.getString(getString(R.string.pref_insurance_price_key),"-");
         mMPG = sharedPreferences.getString(getString(R.string.pref_mpg_key),"-");
         mPPG = sharedPreferences.getString(getString(R.string.pref_ppg_key),"-");
+        mDriveInProgress = false;
 
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(mDriveInProgress) {
+
+        }
     }
 
     @Nullable
@@ -165,38 +167,44 @@ public class HomeFragment extends Fragment implements HomeContract.view, View.On
     @Override
     public void driveHasStarted() {
         // set button text
-        startDrivingButton.setText("Stop Driving");
-        startDrivingButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary, null));
-        view.setBackgroundColor(getResources().getColor(R.color.colorAccent,null));
-
+        startDrivingButton.setText("End Drive");
         showDrivingNotification(0);
     }
 
     @Override
+    public void driveHasEnded() {
+        // update any UI elements
+        startDrivingButton.setText(getResources().getString(R.string.prepare_drive_btn_text));
+
+        // get rid of the driving notification
+        removeDrivingNotification();
+    }
+
+
+    // NOTE: For use if I ever get a service working correctly
+    // ------------------------------
+    @Override
     public void startDrive() {
+        // Start background location tracking service
         Intent i = new Intent(getContext().getApplicationContext(), LocationTrackingService.class);
         getContext().startService(i);
     }
 
     @Override
-    public void driveHasEnded() {
-        startDrivingButton.setText("Start Driving");
-        startDrivingButton.setBackgroundColor(getResources().getColor(R.color.colorAccent, null));
-        view.setBackgroundColor(getResources().getColor(R.color.white,null));
-        removeDrivingNotification();
-    }
-
-    @Override
     public void endDrive() {
+        // Stop background location tracking service
         Intent i = new Intent(getContext().getApplicationContext(), LocationTrackingService.class);
         getContext().stopService(i);
     }
+
+    // ----------------------------
 
     @Override
     public void showPermissionRequiredToast() {
         Toast.makeText(getContext(), "Cannot track location with no location",Toast.LENGTH_LONG).show();
     }
 
+    // TODO: RENAME THIS
     @Override
     public void displayDistance(double distance) {
         // start the select num of riders fragment
@@ -261,7 +269,7 @@ public class HomeFragment extends Fragment implements HomeContract.view, View.On
         mNotificationManager.cancel(uniqueNotificationID);
     }
 
-    private boolean checkPermissions() {
+    private boolean requestPermissions() {
         if(Build.VERSION.SDK_INT >= 23 && ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -281,7 +289,7 @@ public class HomeFragment extends Fragment implements HomeContract.view, View.On
                 } else {
                     // permission denied
                     Toast.makeText(getContext(), "Cannot track your drive without access to your location", Toast.LENGTH_LONG).show();
-                    checkPermissions();
+                    requestPermissions();
                 }
         }
     }

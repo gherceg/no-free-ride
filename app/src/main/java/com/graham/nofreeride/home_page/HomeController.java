@@ -1,31 +1,15 @@
-package com.graham.nofreeride.Home;
+package com.graham.nofreeride.home_page;
 
-import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.location.Location;
-import android.net.Network;
-import android.os.AsyncTask;
-import android.os.Build;
-import android.preference.PreferenceManager;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.graham.nofreeride.Model.CompletionBlock;
 import com.graham.nofreeride.Model.LocationTracker;
-import com.graham.nofreeride.Model.RideCalculator;
-import com.graham.nofreeride.R;
-import com.graham.nofreeride.utilities.NetworkUtils;
+import com.graham.nofreeride.utils.RideCalculator;
 
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 
 import static android.content.ContentValues.TAG;
@@ -103,6 +87,7 @@ public class HomeController implements HomeContract.controller {
         double distance = calculateDistance(locations);
         view.displayDistance(distance);
     }
+
 
     private void getUpdatedDriveInfo() {
         ArrayList<Location> locations = locationTracker.getCurrentLocationArray();

@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">NoFreeRide</string>
     <string name="dollar_sign">$</string>
-    <string name="prepare_drive_btn_text">New Ride</string>
-    <string name="calculate_price_btn_text">Calculate Price</string>
+    <string name="prepare_drive_btn_text">Drive</string>
+    <string name="calculate_price_btn_text">Finish</string>
     <string name="pref_ppg_key">ppg</string>
     <string name="pref_ppg_title">PPG</string>
     <string name="pref_mpg_key">mpg</string>

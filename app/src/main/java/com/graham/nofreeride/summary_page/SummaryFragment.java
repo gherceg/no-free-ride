@@ -1,6 +1,5 @@
-package com.graham.nofreeride.Summary;
+package com.graham.nofreeride.summary_page;
 
-import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,12 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
 import com.graham.nofreeride.R;
-import com.graham.nofreeride.riders.RidersFragment;
-
-import org.w3c.dom.Text;
 
 import java.util.Locale;
 

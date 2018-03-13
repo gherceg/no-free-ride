@@ -1,8 +1,4 @@
-package com.graham.nofreeride.Home;
-
-import android.location.Location;
-
-import java.util.ArrayList;
+package com.graham.nofreeride.home_page;
 
 /**
  * Created by grahamherceg on 2/2/18.

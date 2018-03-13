@@ -1,7 +1,6 @@
-package com.graham.nofreeride;
+package com.graham.nofreeride.activities;
 
 import android.content.Intent;
-import android.provider.Settings;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,7 +8,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.graham.nofreeride.Home.HomeFragment;
+import com.graham.nofreeride.R;
+import com.graham.nofreeride.home_page.HomeFragment;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -25,6 +25,7 @@ public class HomeActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         if(getSupportActionBar() != null) {
             getSupportActionBar().setHomeButtonEnabled(true);
+            getSupportActionBar().setElevation(0);
         }
 
         // get the home fragment
