@@ -98,7 +98,7 @@ public class RidersFragment extends Fragment implements View.OnClickListener, Ri
         // remove the riders fragment no matter what
         fragmentManager.beginTransaction().remove(this).commit();
         // replace with summary fragment, adding to backstack
-        fragmentManager.beginTransaction().replace(R.id.frag_container, SummaryFragment.newInstance(pricePerRider, mDistance)).addToBackStack(null).commit();
+        fragmentManager.beginTransaction().replace(R.id.frag_container, SummaryFragment.newInstance(mDistance)).addToBackStack(null).commit();
 
     }
 

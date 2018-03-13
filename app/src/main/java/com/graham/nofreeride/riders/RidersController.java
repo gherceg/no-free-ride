@@ -35,7 +35,7 @@ public class RidersController {
         double mpg = Double.parseDouble(sharedPreferences.getString(context.getString(R.string.pref_mpg_key),"0"));
         double ppg = Double.parseDouble(sharedPreferences.getString(context.getString(R.string.pref_ppg_key),"0"));
         double insurance = Double.parseDouble(sharedPreferences.getString(context.getString(R.string.pref_insurance_price_key),"0"));
-        mPricePerRider = RideCalculator.calculatePricePerRider(numOfRiders,mpg,insurance,ppg,mDistance);
+        mPricePerRider = RideCalculator.calculatePricePerRider(numOfRiders,mpg,ppg,mDistance);
         view.showSummaryFragment(mPricePerRider);
     }
 

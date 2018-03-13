@@ -38,13 +38,12 @@ public class RideCalculator {
      * Used to calculate the price each rider should pay
      * @param numOfRiders - number of riders in the car, EXCLUDING the driver
      * @param milesPerGallon - the car's average miles per gallon
-     * @param insurancePerMonth - insurance per month
      * @param gasPricePerGallon - gas price per gallon for the current area
      * @param milesDriven - the total distance driven in miles
      * @return - the cost per rider
      */
-    public static double calculatePricePerRider(int numOfRiders, double milesPerGallon, double insurancePerMonth, double gasPricePerGallon, double milesDriven) {
-        Log.d(TAG, "pricePerRider: Calculating price for: " + numOfRiders + " riders, " + milesPerGallon + " MPG" + insurancePerMonth + "insurance, " +
+    public static double calculatePricePerRider(int numOfRiders, double milesPerGallon, double gasPricePerGallon, double milesDriven) {
+        Log.d(TAG, "pricePerRider: Calculating price for: " + numOfRiders + " riders, " + milesPerGallon + " MPG"  +
         gasPricePerGallon + " PPG," + milesDriven + " miles driven");
         // calculate total cost
         double totalCost = (milesDriven/milesPerGallon) * gasPricePerGallon;

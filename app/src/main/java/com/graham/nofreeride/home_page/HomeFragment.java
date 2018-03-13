@@ -31,6 +31,7 @@ import com.graham.nofreeride.activities.HomeActivity;
 import com.graham.nofreeride.R;
 import com.graham.nofreeride.activities.SettingsActivity;
 import com.graham.nofreeride.riders.RidersFragment;
+import com.graham.nofreeride.summary_page.SummaryFragment;
 import com.graham.nofreeride.utils.LocationTrackingService;
 
 import java.util.Locale;
@@ -210,7 +211,8 @@ public class HomeFragment extends Fragment implements HomeContract.view, View.On
         // start the select num of riders fragment
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 //        fragmentManager.beginTransaction().replace(R.id.frag_container,RidersFragment.newInstance(distance)).addToBackStack(null).commit();
-        fragmentManager.beginTransaction().replace(R.id.riders_frag_container,RidersFragment.newInstance(distance)).commit();
+//        fragmentManager.beginTransaction().replace(R.id.riders_frag_container,RidersFragment.newInstance(distance)).commit();
+        fragmentManager.beginTransaction().replace(R.id.frag_container, SummaryFragment.newInstance(distance)).addToBackStack(null).commit();
 
         // disable drive button
         startDrivingButton.setEnabled(false);

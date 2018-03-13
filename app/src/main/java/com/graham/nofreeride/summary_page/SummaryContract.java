@@ -7,6 +7,6 @@ package com.graham.nofreeride.summary_page;
 public interface SummaryContract {
 
     interface view {
-
+        void updatePriceTextView(String price);
     }
 }
