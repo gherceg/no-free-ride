@@ -1,4 +1,4 @@
-package com.graham.nofreeride.preferences;
+package com.graham.nofreeride.fragments.preferences;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;

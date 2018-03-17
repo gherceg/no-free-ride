@@ -1,4 +1,4 @@
-package com.graham.nofreeride.summary_page;
+package com.graham.nofreeride.fragments.summary;
 
 import android.content.Context;
 import android.content.SharedPreferences;

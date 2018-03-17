@@ -52,20 +52,22 @@ public class LocationTrackingService extends Service {
     // NOTE: Code snippet for local binder found here
     // https://medium.com/@ankit_aggarwal/ways-to-communicate-between-activity-and-service-6a8f07275297
     // -----
-    private final IBinder mBinder = new LocalBinder();
+//    private final IBinder mBinder = new LocalBinder();
 
-    public class LocalBinder extends Binder {
-        LocationTrackingService getService() {
-            return LocationTrackingService.this;
-        }
-    }
+//    public class LocalBinder extends Binder {
+//        LocationTrackingService getService() {
+//            return LocationTrackingService.this;
+//        }
+//    }
     // ------
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         // start location updates
-        mLocationProvider.requestLocationUpdates(mLocationRequest,mLocationCallback,null);
-        return super.onStartCommand(intent, flags, startId);
+        Log.d(TAG, "onStartCommand: Starting Location Tracking Service");
+//        mLocationProvider.requestLocationUpdates(mLocationRequest,mLocationCallback,null);
+        return Service.START_NOT_STICKY;
+//        return super.onStartCommand(intent, flags, startId);
     }
 
     @Nullable
@@ -76,7 +78,7 @@ public class LocationTrackingService extends Service {
 
     @Override
     public void onCreate() {
-        // Make a new thread
+        // Create new thread to handle tracking location
         HandlerThread thread = new HandlerThread("ServiceStartArguments", Process.THREAD_PRIORITY_BACKGROUND);
         thread.start();
 
@@ -143,6 +145,7 @@ public class LocationTrackingService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.d(TAG, "onDestroy: Stopping Location Tracking Service");
         mLocationProvider.removeLocationUpdates(mLocationCallback);
 
         // setup intent to pass in broadcast receiver

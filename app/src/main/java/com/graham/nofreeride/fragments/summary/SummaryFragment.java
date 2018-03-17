@@ -1,23 +1,19 @@
-package com.graham.nofreeride.summary_page;
+package com.graham.nofreeride.fragments.summary;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
 import com.graham.nofreeride.R;
 
 import java.util.Locale;
-
-import static android.content.ContentValues.TAG;
 
 /**
  * Created by grahamherceg on 2/10/18.

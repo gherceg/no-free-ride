@@ -1,4 +1,4 @@
-package com.graham.nofreeride.fragments.home.home_page;
+package com.graham.nofreeride.fragments.home;
 
 /**
  * Created by grahamherceg on 2/2/18.

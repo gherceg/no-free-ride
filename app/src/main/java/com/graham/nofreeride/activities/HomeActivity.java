@@ -9,7 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.graham.nofreeride.R;
-import com.graham.nofreeride.home_page.HomeFragment;
+import com.graham.nofreeride.fragments.home.HomeFragment;
 
 public class HomeActivity extends AppCompatActivity {
 

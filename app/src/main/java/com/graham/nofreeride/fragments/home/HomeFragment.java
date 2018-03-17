@@ -1,4 +1,4 @@
-package com.graham.nofreeride.fragments.home.home_page;
+package com.graham.nofreeride.fragments.home;
 
 import android.Manifest;
 import android.app.Notification;
@@ -30,7 +30,7 @@ import com.google.android.gms.location.LocationServices;
 import com.graham.nofreeride.activities.HomeActivity;
 import com.graham.nofreeride.R;
 import com.graham.nofreeride.activities.SettingsActivity;
-import com.graham.nofreeride.summary_page.SummaryFragment;
+import com.graham.nofreeride.fragments.summary.SummaryFragment;
 import com.graham.nofreeride.utils.LocationTrackingService;
 
 import java.util.Locale;

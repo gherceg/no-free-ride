@@ -1,4 +1,4 @@
-package com.graham.nofreeride.fragments.home.home_page;
+package com.graham.nofreeride.fragments.home;
 
 import android.content.Context;
 import android.content.SharedPreferences;

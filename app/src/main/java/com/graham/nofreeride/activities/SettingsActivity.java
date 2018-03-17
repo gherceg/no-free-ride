@@ -8,7 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.graham.nofreeride.R;
-import com.graham.nofreeride.preferences.PreferencesFragment;
+import com.graham.nofreeride.fragments.preferences.PreferencesFragment;
 
 /**
  * Created by grahamherceg on 2/3/18.
