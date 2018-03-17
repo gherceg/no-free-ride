@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.graham.nofreeride.R;
-import com.graham.nofreeride.riders.RidersContract;
 import com.graham.nofreeride.utils.RideCalculator;
 
 import java.util.Locale;

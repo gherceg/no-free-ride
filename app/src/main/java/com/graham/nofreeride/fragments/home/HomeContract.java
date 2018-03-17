@@ -1,4 +1,4 @@
-package com.graham.nofreeride.home_page;
+package com.graham.nofreeride.fragments.home.home_page;
 
 /**
  * Created by grahamherceg on 2/2/18.
@@ -18,7 +18,7 @@ public interface HomeContract {
 
         void showPermissionRequiredToast();
 
-        void displayDistance(double distance);
+        void displaySummaryPage(double distance);
 
         void updateDriveNotifcation(double distance);
     }

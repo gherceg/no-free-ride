@@ -1,4 +1,4 @@
-package com.graham.nofreeride.home_page;
+package com.graham.nofreeride.fragments.home.home_page;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -30,6 +30,8 @@ public class HomeController implements HomeContract.controller {
     private double mInsurancePrice;
     private double mMPG;
     private double mPPG;
+
+    private double mTotalDistance;
 
     SharedPreferences sharedPreferences;
 
@@ -85,14 +87,14 @@ public class HomeController implements HomeContract.controller {
         // stop tracking and receive array of locations
         ArrayList<Location> locations = locationTracker.stopLocationUpdates();
         double distance = calculateDistance(locations);
-        view.displayDistance(distance);
+        view.displaySummaryPage(distance);
     }
 
 
     private void getUpdatedDriveInfo() {
         ArrayList<Location> locations = locationTracker.getCurrentLocationArray();
         double distance = calculateDistance(locations);
-        view.displayDistance(distance);
+//        view.displaySummaryPage(distance);
         view.updateDriveNotifcation(distance);
     }
 
@@ -110,7 +112,7 @@ public class HomeController implements HomeContract.controller {
     }
 
     // Helpers to calculate
-
+    // accumulates distance,
     private double calculateDistance(ArrayList<Location> locations) {
         double totalDistance = 0;
         for(int i = 0; i < locations.size() - 1; i++) {

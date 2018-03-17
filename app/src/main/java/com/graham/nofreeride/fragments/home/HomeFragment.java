@@ -1,4 +1,4 @@
-package com.graham.nofreeride.home_page;
+package com.graham.nofreeride.fragments.home.home_page;
 
 import android.Manifest;
 import android.app.Notification;
@@ -30,7 +30,6 @@ import com.google.android.gms.location.LocationServices;
 import com.graham.nofreeride.activities.HomeActivity;
 import com.graham.nofreeride.R;
 import com.graham.nofreeride.activities.SettingsActivity;
-import com.graham.nofreeride.riders.RidersFragment;
 import com.graham.nofreeride.summary_page.SummaryFragment;
 import com.graham.nofreeride.utils.LocationTrackingService;
 
@@ -99,9 +98,6 @@ public class HomeFragment extends Fragment implements HomeContract.view, View.On
     @Override
     public void onPause() {
         super.onPause();
-        if(mDriveInProgress) {
-
-        }
     }
 
     @Nullable
@@ -207,7 +203,7 @@ public class HomeFragment extends Fragment implements HomeContract.view, View.On
 
     // TODO: RENAME THIS
     @Override
-    public void displayDistance(double distance) {
+    public void displaySummaryPage(double distance) {
         // start the select num of riders fragment
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 //        fragmentManager.beginTransaction().replace(R.id.frag_container,RidersFragment.newInstance(distance)).addToBackStack(null).commit();
