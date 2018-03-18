@@ -6,6 +6,7 @@ import android.location.Location;
 import android.util.Log;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.maps.model.LatLng;
 import com.graham.nofreeride.Model.CompletionBlock;
 import com.graham.nofreeride.Model.LocationTracker;
 import com.graham.nofreeride.utils.RideCalculator;
@@ -19,21 +20,12 @@ import static android.content.ContentValues.TAG;
  */
 
 public class HomeController implements HomeContract.controller {
+
     HomeContract.view view;
 
     Context context;
 
     private LocationTracker locationTracker;
-
-//    private ArrayList<Location> locations;
-
-    private double mInsurancePrice;
-    private double mMPG;
-    private double mPPG;
-
-    private double mTotalDistance;
-
-    SharedPreferences sharedPreferences;
 
     private boolean isDriving = false;
 
@@ -77,7 +69,6 @@ public class HomeController implements HomeContract.controller {
 
         // TODO: should start tracking, receiving location updates on an interval
         locationTracker.startLocationUpdates();
-//        getCurrentLocation();
     }
 
 
@@ -86,15 +77,15 @@ public class HomeController implements HomeContract.controller {
         isDriving = false;
         // stop tracking and receive array of locations
         ArrayList<Location> locations = locationTracker.stopLocationUpdates();
-        double distance = calculateDistance(locations);
-        view.displaySummaryPage(distance);
+        ArrayList<LatLng> latLngs = locationTracker.getCurrentLatLngArray();
+        double distance = calculateDistance(latLngs);
+        view.displaySummaryPage(latLngs,distance);
     }
 
 
     private void getUpdatedDriveInfo() {
-        ArrayList<Location> locations = locationTracker.getCurrentLocationArray();
-        double distance = calculateDistance(locations);
-//        view.displaySummaryPage(distance);
+        ArrayList<LatLng> latLngs = locationTracker.getCurrentLatLngArray();
+        double distance = calculateDistance(latLngs);
         view.updateDriveNotifcation(distance);
     }
 
@@ -112,14 +103,13 @@ public class HomeController implements HomeContract.controller {
     }
 
     // Helpers to calculate
-    // accumulates distance,
-    private double calculateDistance(ArrayList<Location> locations) {
+    private double calculateDistance(ArrayList<LatLng> latLngs) {
         double totalDistance = 0;
-        for(int i = 0; i < locations.size() - 1; i++) {
-            if(locations.get(i) == null || locations.get(i+1) == null) {
+        for(int i = 0; i < latLngs.size() - 1; i++) {
+            if(latLngs.get(i) == null || latLngs.get(i+1) == null) {
                 Log.d(TAG, "calculateDistance: Location at " + i + " is null");
             } else {
-                totalDistance += RideCalculator.calculateDistance(locations.get(i), locations.get(i+1));
+                totalDistance += RideCalculator.calculateDistance(latLngs.get(i), latLngs.get(i+1));
             }
         }
         return totalDistance;

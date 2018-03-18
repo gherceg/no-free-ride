@@ -8,5 +8,7 @@ public interface SummaryContract {
 
     interface view {
         void updatePriceTextView(String price);
+        void updateNumberOfPassengers(String passengers);
+
     }
 }

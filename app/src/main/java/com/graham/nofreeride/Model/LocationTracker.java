@@ -11,6 +11,7 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ public class LocationTracker {
 
 
     private ArrayList<Location> locationList;
+    private ArrayList<LatLng> latLngList;
     private Location mStartingLocation;
     private Location mEndingLocation;
 
@@ -45,6 +47,7 @@ public class LocationTracker {
 
         // initialize locations array
         locationList = new ArrayList<>();
+        latLngList = new ArrayList<>();
 
         // setup location services
         locationRequest = new LocationRequest();
@@ -52,6 +55,8 @@ public class LocationTracker {
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 for(Location location : locationResult.getLocations()) {
+                    LatLng latLng = new LatLng(location.getLatitude(),location.getLongitude());
+                    latLngList.add(latLng);
                     locationList.add(location);
                     String loc = location.toString();
                     String message = String.format("Location is %s", loc);
@@ -113,5 +118,9 @@ public class LocationTracker {
 
     public ArrayList<Location> getCurrentLocationArray() {
         return locationList;
+    }
+
+    public ArrayList<LatLng> getCurrentLatLngArray() {
+        return latLngList;
     }
 }

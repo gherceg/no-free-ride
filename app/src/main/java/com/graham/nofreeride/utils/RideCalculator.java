@@ -3,6 +3,8 @@ package com.graham.nofreeride.utils;
 import android.location.Location;
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import static android.content.ContentValues.TAG;
 
 /**
@@ -17,15 +19,15 @@ public class RideCalculator {
      * @param endLoc - Ending location object
      * @return - the distance between two points IN MILES
      */
-    public static double calculateDistance(Location startLoc, Location endLoc) {
+    public static double calculateDistance(LatLng startLoc, LatLng endLoc) {
         double R = 6371000;
         double distance = -1;
 
         // calculate distance
-        double latOne = startLoc.getLatitude() * (Math.PI / 180);
-        double latTwo = endLoc.getLatitude() * (Math.PI / 180);
-        double latDiff = (startLoc.getLatitude() - endLoc.getLatitude()) * (Math.PI / 180);
-        double lonDiff = (startLoc.getLongitude() - endLoc.getLongitude()) * (Math.PI / 180);
+        double latOne = startLoc.latitude * (Math.PI / 180);
+        double latTwo = endLoc.latitude * (Math.PI / 180);
+        double latDiff = (startLoc.latitude - endLoc.latitude) * (Math.PI / 180);
+        double lonDiff = (startLoc.longitude - endLoc.longitude) * (Math.PI / 180);
 
         double a = (Math.sin(latDiff/2) * Math.sin(latDiff/2)) + (Math.cos(latOne) * Math.cos(latTwo)) * (Math.sin(lonDiff/2) * Math.sin(lonDiff/2));
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));

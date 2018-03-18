@@ -23,12 +23,16 @@ public class SummaryController {
     private double mMpg;
     private double mPpg;
     private double mInsurancePrice;
+    private int mNumOfPassengers;
 
 
     public SummaryController(SummaryContract.view view, Context context, double mDistance) {
         this.view = view;
         this.context = context;
         this.mDistance = mDistance;
+
+        // default to 1
+        mNumOfPassengers = 1;
 
         // get shared preferences
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -47,4 +51,15 @@ public class SummaryController {
         view.updatePriceTextView(formattedPrice);
     }
 
+    public void addPassengerPressed() {
+        mNumOfPassengers++;
+        calculatePricePerRider(mNumOfPassengers);
+        view.updateNumberOfPassengers(Integer.toString(mNumOfPassengers));
+    }
+
+    public void removePassengerPressed() {
+        mNumOfPassengers--;
+        calculatePricePerRider(mNumOfPassengers);
+        view.updateNumberOfPassengers(Integer.toString(mNumOfPassengers));
+    }
 }

@@ -1,6 +1,7 @@
 package com.graham.nofreeride.activities;
 
 import android.content.Intent;
+import android.location.Location;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,10 +9,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.graham.nofreeride.R;
 import com.graham.nofreeride.fragments.home.HomeFragment;
+import com.graham.nofreeride.fragments.summary.SummaryFragment;
 
-public class HomeActivity extends AppCompatActivity {
+import java.util.ArrayList;
+
+public class HomeActivity extends AppCompatActivity implements HomeFragment.HomeFragmentListener {
 
     HomeFragment homeFragment;
     Toolbar toolbar;
@@ -65,5 +70,24 @@ public class HomeActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onStopDrivePressed(ArrayList<LatLng> latLngs, double distance) {
+        // parse locations array and start new fragment
+//        ParcelableLocations parcelableLocations = new ParcelableLocations(locations);
+
+//        ArrayList<LatLng> locations1 = new ArrayList<>();
+//        locations1.add(new LatLng(25.76, -80.1918));
+//        locations1.add(new LatLng(26.76, -80.1918));
+//        locations1.add(new LatLng(27.76, -80.1918));
+//        locations1.add(new LatLng(28.76, -80.1918));
+//        locations1.add(new LatLng(29.76, -80.1918));
+
+
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.frag_container, SummaryFragment.newInstance(distance,latLngs)).addToBackStack(null).commit();
+
     }
 }

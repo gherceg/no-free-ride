@@ -5,9 +5,11 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -27,12 +29,15 @@ import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
 import com.graham.nofreeride.activities.HomeActivity;
 import com.graham.nofreeride.R;
 import com.graham.nofreeride.activities.SettingsActivity;
 import com.graham.nofreeride.fragments.summary.SummaryFragment;
 import com.graham.nofreeride.utils.LocationTrackingService;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -41,10 +46,17 @@ import java.util.Locale;
 
 public class HomeFragment extends Fragment implements HomeContract.view, View.OnClickListener {
 
+
+    public interface HomeFragmentListener {
+        void onStopDrivePressed(ArrayList<LatLng> latLngs, double distance);
+
+    }
+
     private static final int PERMISSIONS_REQUEST_LOCATION = 1;
 
     View view;
 
+    HomeFragmentListener mListener;
 
     HomeController controller;
     SharedPreferences sharedPreferences;
@@ -70,6 +82,15 @@ public class HomeFragment extends Fragment implements HomeContract.view, View.On
 
     Boolean mDriveInProgress;
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            mListener = (HomeFragmentListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement HomeFragmentListener");
+        }
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -201,19 +222,23 @@ public class HomeFragment extends Fragment implements HomeContract.view, View.On
         Toast.makeText(getContext(), "Cannot track location with no location",Toast.LENGTH_LONG).show();
     }
 
-    // TODO: RENAME THIS
     @Override
     public void displaySummaryPage(double distance) {
+
         // start the select num of riders fragment
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-//        fragmentManager.beginTransaction().replace(R.id.frag_container,RidersFragment.newInstance(distance)).addToBackStack(null).commit();
-//        fragmentManager.beginTransaction().replace(R.id.riders_frag_container,RidersFragment.newInstance(distance)).commit();
-        fragmentManager.beginTransaction().replace(R.id.frag_container, SummaryFragment.newInstance(distance)).addToBackStack(null).commit();
+//        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+//        fragmentManager.beginTransaction().replace(R.id.frag_container, SummaryFragment.newInstance(distance)).addToBackStack(null).commit();
 
         // disable drive button
         startDrivingButton.setEnabled(false);
 
 //        String distanceFormatted = String.format("%.2f m",distance);
+    }
+
+    @Override
+    public void displaySummaryPage(ArrayList<LatLng> latLngs, double distance) {
+        startDrivingButton.setEnabled(false);
+        mListener.onStopDrivePressed(latLngs,distance);
     }
 
     @Override
