@@ -64,11 +64,12 @@ public class HomeController implements HomeContract.controller {
 
     private void startDrive() {
         // tell the view the drive has started
-        view.driveHasStarted();
+//        view.driveHasStarted();
+        view.startDrive();
         isDriving = true;
 
         // TODO: should start tracking, receiving location updates on an interval
-        locationTracker.startLocationUpdates();
+//        locationTracker.startLocationUpdates();
     }
 
 

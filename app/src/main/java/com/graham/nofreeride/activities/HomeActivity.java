@@ -13,10 +13,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.graham.nofreeride.R;
 import com.graham.nofreeride.fragments.home.HomeFragment;
 import com.graham.nofreeride.fragments.summary.SummaryFragment;
+import com.graham.nofreeride.utils.LocationTrackingService;
 
 import java.util.ArrayList;
 
-public class HomeActivity extends AppCompatActivity implements HomeFragment.HomeFragmentListener {
+public class HomeActivity extends AppCompatActivity implements HomeFragment.HomeFragmentListener, SummaryFragment.SummaryFragmentListener {
 
     HomeFragment homeFragment;
     Toolbar toolbar;
@@ -74,20 +75,19 @@ public class HomeActivity extends AppCompatActivity implements HomeFragment.Home
 
     @Override
     public void onStopDrivePressed(ArrayList<LatLng> latLngs, double distance) {
-        // parse locations array and start new fragment
-//        ParcelableLocations parcelableLocations = new ParcelableLocations(locations);
-
-//        ArrayList<LatLng> locations1 = new ArrayList<>();
-//        locations1.add(new LatLng(25.76, -80.1918));
-//        locations1.add(new LatLng(26.76, -80.1918));
-//        locations1.add(new LatLng(27.76, -80.1918));
-//        locations1.add(new LatLng(28.76, -80.1918));
-//        locations1.add(new LatLng(29.76, -80.1918));
-
-
-
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.frag_container, SummaryFragment.newInstance(distance,latLngs)).addToBackStack(null).commit();
+    }
 
+    @Override
+    public void onStartDrivePressed() {
+        // start location tracking service
+        Intent i = new Intent(getApplicationContext(), LocationTrackingService.class);
+        startService(i);
+    }
+
+    @Override
+    public void onSummarySwipeUp() {
+        // start detailed summary page
     }
 }

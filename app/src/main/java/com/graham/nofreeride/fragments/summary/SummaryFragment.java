@@ -1,5 +1,6 @@
 package com.graham.nofreeride.fragments.summary;
 
+import android.gesture.Gesture;
 import android.location.Location;
 import android.media.Image;
 import android.os.Bundle;
@@ -9,7 +10,9 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -40,11 +43,11 @@ import static android.content.ContentValues.TAG;
  * Created by grahamherceg on 2/10/18.
  */
 
-public class SummaryFragment extends Fragment implements SummaryContract.view, OnMapReadyCallback, View.OnClickListener {
+public class SummaryFragment extends Fragment implements SummaryContract.view, OnMapReadyCallback, View.OnClickListener, View.OnTouchListener {
 
 
     public interface SummaryFragmentListener {
-
+        void onSummarySwipeUp();
     }
 
     View view;
@@ -60,6 +63,8 @@ public class SummaryFragment extends Fragment implements SummaryContract.view, O
     private double mPricePerRider;
     private double mDistance;
     private ArrayList<LatLng> mLocations;
+
+    private GestureDetector mDetector;
 
 
     public static SummaryFragment newInstance(double distance, ArrayList<LatLng> locations) {
@@ -108,6 +113,8 @@ public class SummaryFragment extends Fragment implements SummaryContract.view, O
         distanceTextView.setText(distance);
 
         statsContainer = (View)view.findViewById(R.id.view_stats_container);
+        mDetector = new GestureDetector(getContext(), new GestureListener());
+        statsContainer.setOnTouchListener(this);
 
         numOfPassengersTextView = (TextView)view.findViewById(R.id.tv_num_of_passengers);
         updateNumberOfPassengers(Integer.toString(1));
@@ -126,6 +133,7 @@ public class SummaryFragment extends Fragment implements SummaryContract.view, O
 
         return view;
     }
+
 
     @Override
     public void updatePriceTextView(String price) {
@@ -157,6 +165,7 @@ public class SummaryFragment extends Fragment implements SummaryContract.view, O
             // Store a data object with the polyline, used here to indicate an arbitrary type.
             polyline1.setTag("Drive");
             // style it?
+            polyline1.setStartCap(new RoundCap());
             polyline1.setEndCap(new RoundCap());
             polyline1.setWidth(10);
             polyline1.setColor(R.color.colorPrimary);
@@ -177,6 +186,39 @@ public class SummaryFragment extends Fragment implements SummaryContract.view, O
                 Log.d(TAG, "onClick: Remove a passenger!");
                 controller.removePassengerPressed();
                 break;
+        }
+    }
+
+    // pass onto gesture detector
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        if(v.getId() == R.id.view_stats_container) {
+            return mDetector.onTouchEvent(event);
+        }
+        return false;
+    }
+
+
+    // Hanlding gestures
+    class GestureListener extends GestureDetector.SimpleOnGestureListener {
+        @Override
+        public boolean onDown(MotionEvent e) {
+            Log.d(TAG, "onDown: Pressed the viewwww");
+            return true;
+        }
+
+        @Override
+        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+            Log.d(TAG, "onScroll: Scrolling");
+
+            return super.onScroll(e1, e2, distanceX, distanceY);
+        }
+
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            Log.d(TAG, "onFling: Flung that shit with velocity " + velocityX + " and " + velocityY);
+
+            return super.onFling(e1, e2, velocityX, velocityY);
         }
     }
 

@@ -49,7 +49,7 @@ public class HomeFragment extends Fragment implements HomeContract.view, View.On
 
     public interface HomeFragmentListener {
         void onStopDrivePressed(ArrayList<LatLng> latLngs, double distance);
-
+        void onStartDrivePressed();
     }
 
     private static final int PERMISSIONS_REQUEST_LOCATION = 1;
@@ -204,8 +204,7 @@ public class HomeFragment extends Fragment implements HomeContract.view, View.On
     @Override
     public void startDrive() {
         // Start background location tracking service
-        Intent i = new Intent(getContext().getApplicationContext(), LocationTrackingService.class);
-        getContext().startService(i);
+        mListener.onStartDrivePressed();
     }
 
     @Override

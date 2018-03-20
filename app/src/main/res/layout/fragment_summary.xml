@@ -67,7 +67,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:background="@color/colorPrimary"
-        android:src="@drawable/ic_add_black_24dp"
+        android:src="@drawable/ic_add_white_24dp"
         app:layout_constraintEnd_toStartOf="@+id/tv_price_per_rider"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/tv_num_of_passengers"
@@ -80,7 +80,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="8dp"
         android:background="@color/colorPrimary"
-        android:src="@drawable/ic_remove_black_24dp"
+        android:src="@drawable/ic_remove_white_24dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/view_stats_container" />
 
@@ -112,6 +112,17 @@
         app:layout_constraintStart_toEndOf="@+id/btn_remove_rider"
         app:layout_constraintTop_toTopOf="@+id/view_stats_container"
         tools:text="3" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintEnd_toStartOf="@+id/tv_total_distance"
+        app:layout_constraintStart_toEndOf="@+id/btn_add_rider"
+        app:layout_constraintTop_toTopOf="@+id/view_stats_container"
+        app:srcCompat="@drawable/ic_keyboard_arrow_up_white_24dp" />
 
     <!--<NumberPicker-->
         <!--android:id="@+id/np_num_riders"-->
