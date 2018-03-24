@@ -27,6 +27,8 @@
             android:value="@string/google_maps_key" />
 
 
+        <service android:name=".utils.LocationTrackingService" />
+
         <activity android:name=".activities.HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -18,6 +18,7 @@
         android:background="@drawable/main_button"
         android:text="@string/prepare_drive_btn_text"
         android:textColor="@color/white"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.502"

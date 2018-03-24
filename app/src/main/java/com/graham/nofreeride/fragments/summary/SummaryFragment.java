@@ -84,7 +84,7 @@ public class SummaryFragment extends Fragment implements SummaryContract.view, O
         mLocations = args.getParcelableArrayList("locations");
         mPricePerRider = args.getDouble("price_per_rider", 0.0);
         mDistance = args.getDouble("distance", 0.0);
-//        mDistance = 15.241;
+
 
         // setup controller
         controller = new SummaryController(this,getContext(),mDistance);
@@ -107,6 +107,7 @@ public class SummaryFragment extends Fragment implements SummaryContract.view, O
         pricePerRiderTextView = (TextView)view.findViewById(R.id.tv_price_per_rider);
         String price = String.format(Locale.US,"$%.2f",mPricePerRider);
         pricePerRiderTextView.setText(price);
+        controller.calculatePricePerRider(1);
 
         distanceTextView = (TextView)view.findViewById(R.id.tv_total_distance);
         String distance = String.format(Locale.US, "%.3f miles",mDistance);
@@ -203,7 +204,7 @@ public class SummaryFragment extends Fragment implements SummaryContract.view, O
     class GestureListener extends GestureDetector.SimpleOnGestureListener {
         @Override
         public boolean onDown(MotionEvent e) {
-            Log.d(TAG, "onDown: Pressed the viewwww");
+            Log.d(TAG, "onDown: Pressed the view");
             return true;
         }
 

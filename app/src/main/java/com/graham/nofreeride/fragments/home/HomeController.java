@@ -27,8 +27,10 @@ public class HomeController implements HomeContract.controller {
 
     private LocationTracker locationTracker;
 
+    // defaults to false
     private boolean isDriving = false;
 
+    // provide a getter for driving flag
     protected boolean isDriving() {
         return isDriving;
     }
@@ -63,10 +65,13 @@ public class HomeController implements HomeContract.controller {
     }
 
     private void startDrive() {
-        // tell the view the drive has started
-//        view.driveHasStarted();
-        view.startDrive();
         isDriving = true;
+        // uses LocationTracker (not a service)
+//        view.driveHasStarted();
+
+        // uses a service
+        view.startDriveUsingService();
+
 
         // TODO: should start tracking, receiving location updates on an interval
 //        locationTracker.startLocationUpdates();
@@ -74,13 +79,19 @@ public class HomeController implements HomeContract.controller {
 
 
     private void stopDrive() {
-        view.driveHasEnded();
         isDriving = false;
-        // stop tracking and receive array of locations
-        ArrayList<Location> locations = locationTracker.stopLocationUpdates();
-        ArrayList<LatLng> latLngs = locationTracker.getCurrentLatLngArray();
-        double distance = calculateDistance(latLngs);
-        view.displaySummaryPage(latLngs,distance);
+
+        // uses a service
+        view.endDrive();
+
+        // uses LocationTracker (not a service)
+//        view.driveHasEnded();
+
+//        // stop tracking and receive array of locations
+//        ArrayList<Location> locations = locationTracker.stopLocationUpdates();
+//        ArrayList<LatLng> latLngs = locationTracker.getCurrentLatLngArray();
+//        double distance = calculateDistance(latLngs);
+//        view.displaySummaryPage(latLngs,distance);
     }
 
 

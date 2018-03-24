@@ -56,11 +56,15 @@ public class LocationTracker {
             public void onLocationResult(LocationResult locationResult) {
                 for(Location location : locationResult.getLocations()) {
                     LatLng latLng = new LatLng(location.getLatitude(),location.getLongitude());
-                    latLngList.add(latLng);
-                    locationList.add(location);
-                    String loc = location.toString();
-                    String message = String.format("Location is %s", loc);
-                    Log.d(TAG, message);
+
+                    // don't save the location if we aren't moving fast
+                    if(location.hasSpeed() && location.getSpeed() > 10) {
+                        latLngList.add(latLng);
+                        locationList.add(location);
+//                        String loc = location.toString();
+//                        String message = String.format("Location is %s", loc);
+//                        Log.d(TAG, message);
+                    }
                 }
             }
         };

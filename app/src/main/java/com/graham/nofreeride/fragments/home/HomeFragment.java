@@ -202,16 +202,22 @@ public class HomeFragment extends Fragment implements HomeContract.view, View.On
     // NOTE: For use if I ever get a service working correctly
     // ------------------------------
     @Override
-    public void startDrive() {
+    public void startDriveUsingService() {
         // Start background location tracking service
         mListener.onStartDrivePressed();
+        // update UI
+        startDrivingButton.setText("End Drive");
+        // might not need to set the nofication
+//        showDrivingNotification(0);
     }
 
     @Override
     public void endDrive() {
+        mListener.onStopDrivePressed(null,0);
+        startDrivingButton.setText(getResources().getString(R.string.prepare_drive_btn_text));
         // Stop background location tracking service
-        Intent i = new Intent(getContext().getApplicationContext(), LocationTrackingService.class);
-        getContext().stopService(i);
+//        Intent i = new Intent(getContext().getApplicationContext(), LocationTrackingService.class);
+//        getContext().stopService(i);
     }
 
     // ----------------------------

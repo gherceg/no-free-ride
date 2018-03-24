@@ -18,7 +18,7 @@ public interface HomeContract {
         void showInvalidInputsToast();
 
         void driveHasStarted();
-        void startDrive();
+        void startDriveUsingService();
         void driveHasEnded();
         void endDrive();
 

@@ -31,9 +31,6 @@ public class SummaryController {
         this.context = context;
         this.mDistance = mDistance;
 
-        // default to 1
-        mNumOfPassengers = 1;
-
         // get shared preferences
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
@@ -41,7 +38,10 @@ public class SummaryController {
         mPpg = Double.parseDouble(sharedPreferences.getString(context.getString(R.string.pref_ppg_key),"0"));
         mInsurancePrice = Double.parseDouble(sharedPreferences.getString(context.getString(R.string.pref_insurance_price_key),"0"));
 
+        // default # of passengers to 1
+        mNumOfPassengers = 1;
     }
+
 
     public void calculatePricePerRider(int numOfRiders) {
         double price = RideCalculator.calculatePricePerRider(numOfRiders,mMpg,mPpg,mDistance);
