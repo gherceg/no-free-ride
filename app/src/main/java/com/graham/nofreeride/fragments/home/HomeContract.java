@@ -10,28 +10,16 @@ import java.util.ArrayList;
  * Created by grahamherceg on 2/2/18.
  */
 
+/**
+ * Interface to separate fragment interactions from logic
+ */
 public interface HomeContract {
 
     interface view {
 
-
         void showInvalidInputsToast();
-
-        void driveHasStarted();
-        void startDriveUsingService();
-        void driveHasEnded();
-        void endDrive();
-
-        void showPermissionRequiredToast();
-
-        void displaySummaryPage(double distance);
-
-        void displaySummaryPage(ArrayList<LatLng> latLngs, double distance);
-
-        void updateDriveNotifcation(double distance);
-
+        void startDrive();
+        void stopDrive();
     }
 
-    interface controller {
-    }
 }

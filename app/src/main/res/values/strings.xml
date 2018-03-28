@@ -11,4 +11,5 @@
     <string name="pref_insurance_price_title">Insurance (per Month)</string>
     <string name="menu_settings_title">Settings</string>
     <string name="stop_drive_btn_text">End Drive</string>
+    <string name="toggle_stop_drive_btn">End Drive</string>
 </resources>

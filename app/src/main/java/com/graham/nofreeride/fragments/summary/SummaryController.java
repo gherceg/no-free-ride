@@ -14,6 +14,10 @@ import java.util.Locale;
  */
 
 public class SummaryController {
+
+    private static int MIN_PASSENGERS = 0;
+    private static int MAX_PASSENGERS = 5;
+
     SharedPreferences sharedPreferences;
     Context context;
     SummaryContract.view view;
@@ -23,8 +27,11 @@ public class SummaryController {
     private double mMpg;
     private double mPpg;
     private double mInsurancePrice;
-    private int mNumOfPassengers;
 
+    public int numOfPassengers;
+
+    private boolean mRemoveButtonDisabled = false;
+    private boolean mAddButtonDisabled = false;
 
     public SummaryController(SummaryContract.view view, Context context, double mDistance) {
         this.view = view;
@@ -39,7 +46,7 @@ public class SummaryController {
         mInsurancePrice = Double.parseDouble(sharedPreferences.getString(context.getString(R.string.pref_insurance_price_key),"0"));
 
         // default # of passengers to 1
-        mNumOfPassengers = 1;
+        numOfPassengers = 1;
     }
 
 
@@ -52,14 +59,35 @@ public class SummaryController {
     }
 
     public void addPassengerPressed() {
-        mNumOfPassengers++;
-        calculatePricePerRider(mNumOfPassengers);
-        view.updateNumberOfPassengers(Integer.toString(mNumOfPassengers));
+        if(numOfPassengers >= MAX_PASSENGERS) {
+            view.disableAddPassengersButton();
+            mAddButtonDisabled = true;
+            return;
+        }
+
+        if(mRemoveButtonDisabled) {
+            view.enableRemovePassengersButton();
+            mRemoveButtonDisabled = false;
+        }
+        numOfPassengers++;
+        calculatePricePerRider(numOfPassengers);
+        view.updateNumberOfPassengers(Integer.toString(numOfPassengers));
     }
 
     public void removePassengerPressed() {
-        mNumOfPassengers--;
-        calculatePricePerRider(mNumOfPassengers);
-        view.updateNumberOfPassengers(Integer.toString(mNumOfPassengers));
+        if(numOfPassengers <= MIN_PASSENGERS) {
+            view.disableRemovePassengerButton();
+            mRemoveButtonDisabled = true;
+            return;
+        }
+
+        if(mAddButtonDisabled) {
+            view.enableAddPassengersButton();
+            mAddButtonDisabled = false;
+        }
+
+        numOfPassengers--;
+        calculatePricePerRider(numOfPassengers);
+        view.updateNumberOfPassengers(Integer.toString(numOfPassengers));
     }
 }

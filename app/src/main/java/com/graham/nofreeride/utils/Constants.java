@@ -7,13 +7,17 @@ package com.graham.nofreeride.utils;
 public class Constants {
     public interface ACTION {
         String MAIN_ACTION = "com.graham.nofreeride.action.main";
-        public static String STARTFOREGROUND_ACTION = "com.graham.nofreeride.action.startforeground";
+        String EXTERNALSTOP_ACTION = "com.graham.nofreeride.action.externalstop";
+        String STARTFOREGROUND_ACTION = "com.graham.nofreeride.action.startforeground";
         String STOPFOREGROUND_ACTION = "com.graham.nofreeride.action.stopforeground";
+
         String SENDLOCATIONS_ACTION = "com.graham.nofreeride.action.sendlocations";
+        String STOPMESSAGE_ACTION = "com.graham.nofreeride.action.stopmessage";
+
     }
 
     public interface NOTIFICATION_ID {
-        public static int FOREGROUND_SERVICE = 101;
-        public static String FOREGROUND_CHANNEL_ID = "M_CH_ID";
+        int FOREGROUND_SERVICE = 101;
+        String FOREGROUND_CHANNEL_ID = "M_CH_ID";
     }
 }

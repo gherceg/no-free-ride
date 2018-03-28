@@ -19,35 +19,46 @@ import static android.content.ContentValues.TAG;
  * Created by grahamherceg on 2/2/18.
  */
 
-public class HomeController implements HomeContract.controller {
+public class HomeController {
 
     HomeContract.view view;
 
     Context context;
 
-    private LocationTracker locationTracker;
 
-    // defaults to false
-    private boolean isDriving = false;
+    public boolean driveInProgress = false;
 
-    // provide a getter for driving flag
-    protected boolean isDriving() {
-        return isDriving;
+    public boolean isDriveInProgress() {
+        return driveInProgress;
+    }
+
+    public void setDriveInProgress(boolean driveInProgress) {
+        this.driveInProgress = driveInProgress;
     }
 
 
-    public HomeController(Context context, HomeContract.view view, FusedLocationProviderClient client) {
+    /**
+     * Constructor for the HomeController class
+     * @param context - TODO: used when LocationTracking was performed within the controller (may not be needed anymore)
+     * @param view - Interface to communicate with the fragment
+     */
+    public HomeController(Context context, HomeContract.view view ) {
         this.context = context;
         this.view = view;
-        this.locationTracker = new LocationTracker(context, client);
     }
 
 
-    public void onStartDrivingButtonPressed(String insurance, String mpg, String ppg) {
+    /**
+     * This method handles logic for when start drive button is pressed on the view
+     * @param insurance - current set insurance price
+     * @param mpg - current mpg for car
+     * @param ppg - current price per gallon
+     */
+    public void onDriveButtonPressed(String insurance, String mpg, String ppg) {
 
         boolean check = verifyInputs(insurance, mpg, ppg);
         if (check) {
-            if (isDriving) {
+            if (driveInProgress) {
                 stopDrive();
             } else {
                 startDrive();
@@ -57,6 +68,13 @@ public class HomeController implements HomeContract.controller {
         }
     }
 
+    /**
+     *
+     * @param insurance
+     * @param mpg
+     * @param ppg
+     * @return
+     */
     private boolean verifyInputs(String insurance, String mpg, String ppg) {
         if (insurance.equals("-") && mpg.equals("-") && ppg.equals("-")) {
             return false;
@@ -64,68 +82,25 @@ public class HomeController implements HomeContract.controller {
         return true;
     }
 
+    /**
+     * This method handles what to do when starting a drive
+     */
     private void startDrive() {
-        isDriving = true;
-        // uses LocationTracker (not a service)
-//        view.driveHasStarted();
-
-        // uses a service
-        view.startDriveUsingService();
-
-
-        // TODO: should start tracking, receiving location updates on an interval
-//        locationTracker.startLocationUpdates();
+        // update drive flag
+        driveInProgress = true;
+        // tell view that the drive should be started (which will tell the activity)
+        // TODO: could this be improved???
+        view.startDrive();
     }
 
-
+    /**
+     * This method handles what to do when stopping a drive
+     */
     private void stopDrive() {
-        isDriving = false;
-
+        // update drive flag
+        driveInProgress = false;
         // uses a service
-        view.endDrive();
-
-        // uses LocationTracker (not a service)
-//        view.driveHasEnded();
-
-//        // stop tracking and receive array of locations
-//        ArrayList<Location> locations = locationTracker.stopLocationUpdates();
-//        ArrayList<LatLng> latLngs = locationTracker.getCurrentLatLngArray();
-//        double distance = calculateDistance(latLngs);
-//        view.displaySummaryPage(latLngs,distance);
+        view.stopDrive();
     }
-
-
-    private void getUpdatedDriveInfo() {
-        ArrayList<LatLng> latLngs = locationTracker.getCurrentLatLngArray();
-        double distance = calculateDistance(latLngs);
-        view.updateDriveNotifcation(distance);
-    }
-
-
-    public void getCurrentLocation() {
-        boolean permission = locationTracker.getCurrentLocation(new CompletionBlock() {
-            @Override
-            public void returnLocation(Location location) {
-                // not implementing this right now
-            }
-        });
-        if (!permission) {
-            view.showPermissionRequiredToast();
-        }
-    }
-
-    // Helpers to calculate
-    private double calculateDistance(ArrayList<LatLng> latLngs) {
-        double totalDistance = 0;
-        for(int i = 0; i < latLngs.size() - 1; i++) {
-            if(latLngs.get(i) == null || latLngs.get(i+1) == null) {
-                Log.d(TAG, "calculateDistance: Location at " + i + " is null");
-            } else {
-                totalDistance += RideCalculator.calculateDistance(latLngs.get(i), latLngs.get(i+1));
-            }
-        }
-        return totalDistance;
-    }
-
 
 }

@@ -53,11 +53,9 @@ public class LocationTrackingService extends Service {
     // We will take a location update every 5 seconds if it is available
     private static final long FASTEST_LOCATION_UPDATE_INTERVAL_MS = 1000;
 
+    private static final int MIN_LOCATION_SPEED = 0;
+
     public static boolean IS_SERIVCE_RUNNING = false;
-
-    // thread stuff
-    private Looper mServiceLooper;
-
 
 
     //    private LocationListener listener;
@@ -72,12 +70,6 @@ public class LocationTrackingService extends Service {
 
     @Override
     public void onCreate() {
-        // Create new thread to handle tracking location
-        HandlerThread thread = new HandlerThread("ServiceStartArguments", Process.THREAD_PRIORITY_FOREGROUND);
-        thread.start();
-
-        mServiceLooper = thread.getLooper();
-
 
         mLocationProvider = LocationServices.getFusedLocationProviderClient(this);
 
@@ -96,86 +88,127 @@ public class LocationTrackingService extends Service {
                 onNewLocation(locationResult.getLastLocation());
             }
         };
-
-        // why do I have this again?
-//        getLastLocation();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        // start location updates
-//        Log.d(TAG, "onStartCommand: Starting Location Tracking Service");
-        Toast.makeText(this, "Service Started!", Toast.LENGTH_SHORT).show();
-//        mLocationProvider.requestLocationUpdates(mLocationRequest,mLocationCallback,null);
-//        return Service.START_NOT_STICKY;
-//        return super.onStartCommand(intent, flags, startId);
 
         if(intent.getAction().equals(Constants.ACTION.STARTFOREGROUND_ACTION)) {
-            Log.i(LOG_TAG, "Received Start Foreground Intent");
-            Intent notificationIntent = new Intent(this, HomeActivity.class);
-            notificationIntent.setAction(Constants.ACTION.MAIN_ACTION);
-            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-
-            Intent stopIntent = new Intent(this, LocationTrackingService.class);
-            stopIntent.setAction(Constants.ACTION.STOPFOREGROUND_ACTION);
-            PendingIntent pStopIntent = PendingIntent.getService(this, 0, stopIntent, 0);
-
-            // Setup Notification
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(this,Constants.NOTIFICATION_ID.FOREGROUND_CHANNEL_ID);
-
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                final CharSequence ChannelName = "My Notification";
-                NotificationChannel notificationChannel = new NotificationChannel(Constants.NOTIFICATION_ID.FOREGROUND_CHANNEL_ID,"Drive Notification", NotificationManager.IMPORTANCE_LOW);
-
-                // Configure the notification channel.
-                notificationChannel.setDescription("Driving");
-                notificationChannel.enableLights(true);
-                notificationChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
-                notificationChannel.enableVibration(false);
-                ((NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE)).createNotificationChannel(notificationChannel);
-            }
-
-            Notification notification = builder.setContentTitle("Drive Tracking")
-                    .setTicker("What's the ticker")
-                    .setContentText("Driven: ")
-                    .setSmallIcon(R.drawable.ic_drive_notification)
-                    .setContentIntent(pendingIntent)
-                    .setOngoing(true)
-                    .addAction(android.R.drawable.ic_menu_share,"Stop",pStopIntent)
-                    .build();
-
-
-
-            startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, notification);
-
-            // start receiving updates
-            boolean permission = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
-            if(permission) {
-                Log.d(TAG, "onStartCommand: Registered location provider for location updates");
-                mLocationProvider.requestLocationUpdates(mLocationRequest,mLocationCallback,null);
-            } else {
-                Log.d(TAG, "onStartCommand: Attempted to register location provider, but permission not granted");
-            }
+            handleStartAction();
+        } else if(intent.getAction().equals(Constants.ACTION.EXTERNALSTOP_ACTION)) {
+            handleExternalStopAction();
         } else if(intent.getAction().equals(Constants.ACTION.STOPFOREGROUND_ACTION)) {
-
-            // send locations back to activity
-            sendLocations();
-
-            // only stops service running in foreground...will still run in background
-            stopForeground(true);
-            stopSelf();
+            handleStopAction();
         }
 
         return START_STICKY;
 
     }
 
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy: Stopping Location Tracking Service");
+        mLocationProvider.removeLocationUpdates(mLocationCallback);
+//        mLatLngs.clear();
+//        mLocations.clear();
+
+    }
+
+    private void handleStartAction() {
+        Log.i(LOG_TAG, "Received Start Foreground Intent");
+        // create notification intent
+        Intent notificationIntent = new Intent(this, HomeActivity.class);
+        notificationIntent.setAction(Constants.ACTION.MAIN_ACTION);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+
+        // Add Stop button intent to notification
+        Intent stopIntent = new Intent(this, LocationTrackingService.class);
+        stopIntent.setAction(Constants.ACTION.EXTERNALSTOP_ACTION);
+        PendingIntent pStopIntent = PendingIntent.getService(this, 0, stopIntent, 0);
+
+
+        // Setup Notification
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this,Constants.NOTIFICATION_ID.FOREGROUND_CHANNEL_ID);
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            final CharSequence ChannelName = "My Notification";
+            NotificationChannel notificationChannel = new NotificationChannel(Constants.NOTIFICATION_ID.FOREGROUND_CHANNEL_ID,"Drive Notification", NotificationManager.IMPORTANCE_HIGH);
+
+            // Configure the notification channel.
+            notificationChannel.setDescription("Driving");
+            notificationChannel.enableLights(true);
+            notificationChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
+            notificationChannel.enableVibration(false);
+            ((NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE)).createNotificationChannel(notificationChannel);
+        }
+
+        Notification notification = builder.setContentTitle("Drive Tracking")
+                .setTicker("What's the ticker")
+                .setContentText("Driven: ")
+                .setSmallIcon(R.drawable.ic_drive_notification)
+                .setContentIntent(pendingIntent)
+                .setOngoing(true)
+                .addAction(android.R.drawable.ic_menu_share,"Stop",pStopIntent)
+                .build();
+
+
+
+        startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, notification);
+
+        // start receiving updates
+        boolean permission = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+        if(permission) {
+            Log.d(TAG, "onStartCommand: Registered location provider for location updates");
+            mLocationProvider.requestLocationUpdates(mLocationRequest,mLocationCallback,null);
+        } else {
+            Log.d(TAG, "onStartCommand: Attempted to register location provider, but permission not granted");
+        }
+    }
+
+    private void handleStopAction() {
+        Log.i(LOG_TAG, "Received Stop Foreground Intent");
+        shutdown();
+    }
+
+    private void handleExternalStopAction() {
+        Log.i(LOG_TAG, "Received External Stop Foreground Intent");
+        showActivity();
+        shutdown();
+    }
+
+    private void showActivity() {
+        Intent showHomeActivity = new Intent(this, HomeActivity.class);
+        startActivity(showHomeActivity);
+    }
+
+    private void shutdown() {
+        // send locations back to activity
+        sendLocations();
+
+        // only stops service running in foreground...will still run in background
+        stopForeground(true);
+        // stops service completely
+        stopSelf();
+    }
+
     private void sendLocations() {
         Log.d(TAG, "sendLocations: broadcasting locations");
         Intent intent = new Intent(Constants.ACTION.SENDLOCATIONS_ACTION);
         intent.putParcelableArrayListExtra("locations",mLatLngs);
-        intent.putExtra("distance",mTotalDistance);
+        // NOTE: before adding distance, convert it to
+        double distance_in_miles = mTotalDistance / 1609.34;
+        intent.putExtra("distance",distance_in_miles);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+        // cleanup
+
+    }
+
+    private void sendStoppedMessage() {
+        Log.d(TAG, "sendStoppedMessage: broadcasting stop message");
+        Intent intent = new Intent(Constants.ACTION.STOPMESSAGE_ACTION);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
@@ -215,30 +248,28 @@ public class LocationTrackingService extends Service {
     }
 
     private void onNewLocation(Location lastLocation) {
-        // add this location to our array of locations
-        if(lastLocation != null) {
-            if(!mLocations.isEmpty()) {
-                Location previousDistance = mLocations.get(mLocations.size() - 1);
-                mTotalDistance += lastLocation.distanceTo(previousDistance);
-                Log.d(TAG, "onNewLocation: Total distance is " + mTotalDistance);
+        // check that location is valid and has a min speed
+        if(lastLocation != null && lastLocation.getSpeed() >= MIN_LOCATION_SPEED) {
+            if(lastLocation.hasAccuracy() && lastLocation.getAccuracy() <= 30) {
+                // check if locations contains any elements, if so start to accumulate total distance
+                if(!mLocations.isEmpty()) {
+                    Location previousDistance = mLocations.get(mLocations.size() - 1);
+                    mTotalDistance += lastLocation.distanceTo(previousDistance);
+                    Log.d(TAG, "onNewLocation: Total distance is " + mTotalDistance);
+                }
+                mLocations.add(lastLocation);
+                LatLng latLng = new LatLng(lastLocation.getLatitude(),lastLocation.getLongitude());
+                mLatLngs.add(latLng);
+                Log.d(TAG, "onNewLocation: " + lastLocation.getLatitude() + ", " + lastLocation.getLongitude());
+            } else {
+                Log.w(TAG,"Location is not accurate enough to add to locations array: " + lastLocation.getAccuracy());
             }
-            mLocations.add(lastLocation);
-            mLatLngs.add(new LatLng(lastLocation.getLatitude(),lastLocation.getLongitude()));
-            Log.d(TAG, "onNewLocation: " + lastLocation.getLatitude() + ", " + lastLocation.getLongitude());
+
         }
         else
             Log.w(TAG,"Location is not valid to add to locations array");
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.d(TAG, "onDestroy: Stopping Location Tracking Service");
-        mLocationProvider.removeLocationUpdates(mLocationCallback);
-
-        // setup intent to pass in broadcast receiver
-
-    }
 
 
 }

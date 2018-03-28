@@ -20,6 +20,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,17 +44,25 @@ import java.util.Locale;
 
 /**
  * Created by grahamherceg on 2/2/18.
+ * Fragment class for the home page, displaying driving settings
  */
 
 public class HomeFragment extends Fragment implements HomeContract.view, View.OnClickListener {
 
 
+    /**
+     * Interface implemented by Home Activity to handle fragment transactions and service interactions
+     */
     public interface HomeFragmentListener {
-        void onStopDrivePressed(ArrayList<LatLng> latLngs, double distance);
         void onStartDrivePressed();
+        void onStopDrivePressed();
     }
 
+    /**
+     * Request Code for Location permissions
+     */
     private static final int PERMISSIONS_REQUEST_LOCATION = 1;
+
 
     View view;
 
@@ -60,7 +70,6 @@ public class HomeFragment extends Fragment implements HomeContract.view, View.On
 
     HomeController controller;
     SharedPreferences sharedPreferences;
-    FusedLocationProviderClient locationProviderClient;
 
     NotificationCompat.Builder mNotificationBuilder;
     NotificationManager mNotificationManager;
@@ -73,14 +82,13 @@ public class HomeFragment extends Fragment implements HomeContract.view, View.On
     TextView insurancePriceTextView;
     TextView milesPerGallonTextView;
     TextView pricePerGallonTextView;
-    Button startDrivingButton;
+    Button toggleDriveButton;
 
     // Metrics
     String mInsurancePrice;
     String mMPG;
     String mPPG;
 
-    Boolean mDriveInProgress;
 
     @Override
     public void onAttach(Context context) {
@@ -97,28 +105,51 @@ public class HomeFragment extends Fragment implements HomeContract.view, View.On
         super.onCreate(savedInstanceState);
 
         // create controller
-        locationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
-        controller = new HomeController(getContext(),this,locationProviderClient);
+        controller = new HomeController(getContext(),this);
 
-        if(savedInstanceState != null) {
-            boolean driving = savedInstanceState.getBoolean("drive_in_progress", false);
-            if(driving) {
-                controller.onStartDrivingButtonPressed(mInsurancePrice,mMPG,mPPG);
-            }
-        }
+//        if(savedInstanceState != null) {
+//            boolean driving = savedInstanceState.getBoolean("drive_in_progress", false);
+//            if(driving) {
+//                controller.onStartDrivingButtonPressed(mInsurancePrice,mMPG,mPPG);
+//            }
+//        }
 
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         mInsurancePrice = sharedPreferences.getString(getString(R.string.pref_insurance_price_key),"-");
         mMPG = sharedPreferences.getString(getString(R.string.pref_mpg_key),"-");
         mPPG = sharedPreferences.getString(getString(R.string.pref_ppg_key),"-");
-        mDriveInProgress = false;
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        // don't show back button in action bar on home page
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        if(actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(false);
+            actionBar.setHomeButtonEnabled(false);
+        }
+
+        boolean isDriveInProgress = sharedPreferences.getBoolean("drive_in_progress",false);
+        controller.driveInProgress = isDriveInProgress;
+        if(isDriveInProgress) {
+            toggleDriveButton.setText(R.string.toggle_stop_drive_btn);
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        storeDriveInProgress();
+    }
+
+    private void storeDriveInProgress() {
+        // Save whether a drive is in progress or not
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("drive_in_progress",controller.driveInProgress);
+        // want to save preference immediately right? so use commit and not apply
+        editor.commit();
     }
 
     @Nullable
@@ -132,8 +163,8 @@ public class HomeFragment extends Fragment implements HomeContract.view, View.On
             milesPerGallonTextView.setOnClickListener(this);
             pricePerGallonTextView = (TextView)view.findViewById(R.id.tv_price_per_gallon);
             pricePerGallonTextView.setOnClickListener(this);
-            startDrivingButton = (Button)view.findViewById(R.id.btn_prepare_drive);
-            startDrivingButton.setOnClickListener(this);
+            toggleDriveButton = (Button)view.findViewById(R.id.btn_toggle_drive);
+            toggleDriveButton.setOnClickListener(this);
         }
 
 
@@ -152,16 +183,33 @@ public class HomeFragment extends Fragment implements HomeContract.view, View.On
         return view;
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        outState.putBoolean("drive_in_progress",controller.isDriving());
+//    @Override
+//    public void onSaveInstanceState(Bundle outState) {
+//        outState.putBoolean("drive_in_progress",controller.isDriving());
+//    }
+
+    public void driveStoppedExternally() {
+        // set drive in progress to false
+        controller.driveInProgress = false;
+        storeDriveInProgress();
+        // update UI
+        toggleDriveButton.setText(getResources().getString(R.string.prepare_drive_btn_text));
+    }
+
+    public void updateDriveStatus(boolean driveInProgress) {
+        controller.driveInProgress = driveInProgress;
+        if(driveInProgress) {
+            toggleDriveButton.setText(R.string.toggle_stop_drive_btn);
+        } else {
+            toggleDriveButton.setText(getResources().getString(R.string.prepare_drive_btn_text));
+        }
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_prepare_drive:
-                controller.onStartDrivingButtonPressed(
+            case R.id.btn_toggle_drive:
+                controller.onDriveButtonPressed(
                         mInsurancePrice,
                         mMPG,
                         mPPG);
@@ -181,75 +229,32 @@ public class HomeFragment extends Fragment implements HomeContract.view, View.On
     }
 
 
-
+    /**
+     * Callback from Controller that
+     */
     @Override
-    public void driveHasStarted() {
-        // set button text
-        startDrivingButton.setText("End Drive");
-        showDrivingNotification(0);
-    }
-
-    @Override
-    public void driveHasEnded() {
-        // update any UI elements
-        startDrivingButton.setText(getResources().getString(R.string.prepare_drive_btn_text));
-
-        // get rid of the driving notification
-        removeDrivingNotification();
-    }
-
-
-    // NOTE: For use if I ever get a service working correctly
-    // ------------------------------
-    @Override
-    public void startDriveUsingService() {
+    public void startDrive() {
         // Start background location tracking service
         mListener.onStartDrivePressed();
+
         // update UI
-        startDrivingButton.setText("End Drive");
-        // might not need to set the nofication
-//        showDrivingNotification(0);
+        toggleDriveButton.setText("End Drive");
     }
 
     @Override
-    public void endDrive() {
-        mListener.onStopDrivePressed(null,0);
-        startDrivingButton.setText(getResources().getString(R.string.prepare_drive_btn_text));
-        // Stop background location tracking service
-//        Intent i = new Intent(getContext().getApplicationContext(), LocationTrackingService.class);
-//        getContext().stopService(i);
+    public void stopDrive() {
+        // tell activity to stop the drive
+        mListener.onStopDrivePressed();
+
+        // update UI
+        toggleDriveButton.setText(getResources().getString(R.string.prepare_drive_btn_text));
     }
 
-    // ----------------------------
 
-    @Override
-    public void showPermissionRequiredToast() {
-        Toast.makeText(getContext(), "Cannot track location with no location",Toast.LENGTH_LONG).show();
-    }
 
-    @Override
-    public void displaySummaryPage(double distance) {
-
-        // start the select num of riders fragment
-//        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-//        fragmentManager.beginTransaction().replace(R.id.frag_container, SummaryFragment.newInstance(distance)).addToBackStack(null).commit();
-
-        // disable drive button
-        startDrivingButton.setEnabled(false);
-
-//        String distanceFormatted = String.format("%.2f m",distance);
-    }
-
-    @Override
-    public void displaySummaryPage(ArrayList<LatLng> latLngs, double distance) {
-        startDrivingButton.setEnabled(false);
-        mListener.onStopDrivePressed(latLngs,distance);
-    }
-
-    @Override
-    public void updateDriveNotifcation(double distance) {
-        showDrivingNotification(distance);
-    }
+//    public void showPermissionRequiredToast() {
+//        Toast.makeText(getContext(), "Cannot track location with no location",Toast.LENGTH_LONG).show();
+//    }
 
 
     // Create notification
@@ -313,7 +318,7 @@ public class HomeFragment extends Fragment implements HomeContract.view, View.On
             case PERMISSIONS_REQUEST_LOCATION:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                     // permission was granted
-                    startDrivingButton.setEnabled(true);
+                    toggleDriveButton.setEnabled(true);
                 } else {
                     // permission denied
                     Toast.makeText(getContext(), "Cannot track your drive without access to your location", Toast.LENGTH_LONG).show();

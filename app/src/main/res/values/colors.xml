@@ -6,5 +6,6 @@
     <color name="colorAccent">#81c784</color>
     <color name="colorDriveInProgress">#F44336</color>
     <color name="white">#FFFFFF</color>
+    <color name="grey">#444444</color>
 
 </resources>

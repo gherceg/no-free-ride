@@ -1,10 +1,13 @@
 package com.graham.nofreeride.fragments.summary;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.gesture.Gesture;
 import android.location.Location;
 import android.media.Image;
 import android.os.Bundle;
 import android.os.Parcel;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
@@ -31,6 +34,7 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.RoundCap;
 import com.graham.nofreeride.R;
+import com.graham.nofreeride.fragments.home.HomeFragment;
 import com.graham.nofreeride.utils.ParcelableLocations;
 
 import java.lang.reflect.Array;
@@ -47,7 +51,7 @@ public class SummaryFragment extends Fragment implements SummaryContract.view, O
 
 
     public interface SummaryFragmentListener {
-        void onSummarySwipeUp();
+        void onSummarySwipeUp(double distance, int passengers);
     }
 
     View view;
@@ -59,12 +63,14 @@ public class SummaryFragment extends Fragment implements SummaryContract.view, O
     ImageButton removePassengerButton;
 
     SummaryController controller;
+    private SummaryFragmentListener mListener;
 
     private double mPricePerRider;
     private double mDistance;
     private ArrayList<LatLng> mLocations;
 
     private GestureDetector mDetector;
+    private double scrollDistanceY = 0;
 
 
     public static SummaryFragment newInstance(double distance, ArrayList<LatLng> locations) {
@@ -76,6 +82,21 @@ public class SummaryFragment extends Fragment implements SummaryContract.view, O
         fragment.setArguments(args);
         return fragment;
     }
+
+    /**
+     * onAttach passes in the context, which should implement the listener interface
+     * @param context
+     */
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            mListener = (SummaryFragment.SummaryFragmentListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement SummaryFragmentListener");
+        }
+    }
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -146,6 +167,28 @@ public class SummaryFragment extends Fragment implements SummaryContract.view, O
         numOfPassengersTextView.setText(passengers);
     }
 
+    @Override
+    public void enableAddPassengersButton() {
+        addPassengerButton.setEnabled(true);
+
+    }
+
+    @Override
+    public void disableAddPassengersButton() {
+        addPassengerButton.setEnabled(false);
+    }
+
+    @Override
+    public void disableRemovePassengerButton() {
+        removePassengerButton.setEnabled(false);
+        removePassengerButton.setBackground(getResources().getDrawable(R.drawable.ic_remove_grey_24dp, null));
+    }
+
+    @Override
+    public void enableRemovePassengersButton() {
+        removePassengerButton.setEnabled(true);
+        removePassengerButton.setBackground(getResources().getDrawable(R.drawable.ic_remove_white_24dp,null));
+    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -169,7 +212,7 @@ public class SummaryFragment extends Fragment implements SummaryContract.view, O
             polyline1.setStartCap(new RoundCap());
             polyline1.setEndCap(new RoundCap());
             polyline1.setWidth(10);
-            polyline1.setColor(R.color.colorPrimary);
+            polyline1.setColor(R.color.colorAccent);
             polyline1.setJointType(JointType.ROUND);
 
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(start,14.0f));
@@ -201,7 +244,7 @@ public class SummaryFragment extends Fragment implements SummaryContract.view, O
 
 
     // Hanlding gestures
-    class GestureListener extends GestureDetector.SimpleOnGestureListener {
+    private class GestureListener extends GestureDetector.SimpleOnGestureListener {
         @Override
         public boolean onDown(MotionEvent e) {
             Log.d(TAG, "onDown: Pressed the view");
@@ -210,14 +253,19 @@ public class SummaryFragment extends Fragment implements SummaryContract.view, O
 
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-            Log.d(TAG, "onScroll: Scrolling");
-
+            Log.d(TAG, "onScroll: Scrolling with x: " + distanceX + " and y: " + distanceY);
+            scrollDistanceY += distanceY;
+            if(scrollDistanceY > 1000) {
+                mListener.onSummarySwipeUp(mDistance,controller.numOfPassengers);
+                // reset scroll distance
+                scrollDistanceY = 0;
+            }
             return super.onScroll(e1, e2, distanceX, distanceY);
         }
 
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            Log.d(TAG, "onFling: Flung that shit with velocity " + velocityX + " and " + velocityY);
+            Log.d(TAG, "onFling: Flung with velocity " + velocityX + " and " + velocityY);
 
             return super.onFling(e1, e2, velocityX, velocityY);
         }

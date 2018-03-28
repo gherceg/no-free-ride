@@ -7,8 +7,15 @@ package com.graham.nofreeride.fragments.summary;
 public interface SummaryContract {
 
     interface view {
+
         void updatePriceTextView(String price);
         void updateNumberOfPassengers(String passengers);
 
+        void disableAddPassengersButton();
+        void disableRemovePassengerButton();
+
+        void enableRemovePassengersButton();
+
+        void enableAddPassengersButton();
     }
 }
