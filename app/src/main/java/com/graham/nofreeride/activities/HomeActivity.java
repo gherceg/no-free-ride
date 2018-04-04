@@ -32,15 +32,26 @@ import java.util.ArrayList;
 public class HomeActivity extends AppCompatActivity implements HomeFragment.HomeFragmentListener, SummaryFragment.SummaryFragmentListener, DetailSummaryFragment.DetailSummaryFragmentListener {
     public static final String LOG_TAG = "Home Activity";
 
+    // references to fragments (not using this now)
     HomeFragment homeFragment;
     SummaryFragment summaryFragment;
+    DetailSummaryFragment detailSummaryFragment;
+
     Toolbar toolbar;
+
+    // private members to pass data back and fourth from fragments
+    private double mParkingCost;
+    private int mNumOfPassengers;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        // set defaults
+        mParkingCost = 0.0;
+        mNumOfPassengers = 1;
 
         // set up toolbar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -58,8 +69,11 @@ public class HomeActivity extends AppCompatActivity implements HomeFragment.Home
 
 
         // register to receive intents named "custom-event-name"
-        LocalBroadcastManager.getInstance(this).registerReceiver(mLocationReceiver, new IntentFilter(Constants.ACTION.SENDLOCATIONS_ACTION));
-        LocalBroadcastManager.getInstance(this).registerReceiver(mLocationReceiver, new IntentFilter(Constants.ACTION.STOPMESSAGE_ACTION));
+        LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(this);
+        broadcastManager.registerReceiver(mLocationReceiver, new IntentFilter(Constants.ACTION.SENDLOCATIONS_ACTION));
+        broadcastManager.registerReceiver(mLocationReceiver, new IntentFilter(Constants.ACTION.STOPMESSAGE_ACTION));
+//        LocalBroadcastManager.getInstance(this).registerReceiver(mLocationReceiver, new IntentFilter(Constants.ACTION.SENDLOCATIONS_ACTION));
+//        LocalBroadcastManager.getInstance(this).registerReceiver(mLocationReceiver, new IntentFilter(Constants.ACTION.STOPMESSAGE_ACTION));
     }
 
 
@@ -71,7 +85,13 @@ public class HomeActivity extends AppCompatActivity implements HomeFragment.Home
                 Log.d(TAG, "onReceive: locations were received by activity");
                 ArrayList<LatLng> latLngs = intent.getParcelableArrayListExtra("locations");
                 double distance = intent.getDoubleExtra("distance",0);
-                showSummaryPage(latLngs,distance);
+                // if locations are empty don't move to the next page
+                if(latLngs.isEmpty()) {
+                    Log.d(TAG, "onReceive: no locations exist yet..not showing summary page");
+                    Toast.makeText(getApplicationContext(),"Cannot find location",Toast.LENGTH_SHORT).show();
+                } else {
+                    showSummaryPage(latLngs,distance);
+                }
             }
             else if(intent.getAction().equals(Constants.ACTION.STOPMESSAGE_ACTION)) {
                 Log.d(TAG, "onReceive: received a stop message");
@@ -170,20 +190,61 @@ public class HomeActivity extends AppCompatActivity implements HomeFragment.Home
         fragmentManager.beginTransaction().replace(R.id.frag_container, SummaryFragment.newInstance(distance,latLngs)).addToBackStack(null).commit();
     }
 
+    // ------ Callbacks from Summary Fragment ------
 
-
+    /**
+     * Method to handle adding Detail Summary Fragment
+     * @param distance - pass the distance to the detail summary fragment
+     * @param passengers - pass the number of passengers as user may have changed it before navigating to detail page
+     */
     @Override
     public void onSummarySwipeUp(double distance, int passengers) {
+        // set number of passengers on activity
+        setNumOfPassengers(passengers);
         // start detailed summary page
+        detailSummaryFragment = DetailSummaryFragment.newInstance(distance,passengers);
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.frag_container, DetailSummaryFragment.newInstance(distance,passengers)).addToBackStack(null).commit();
+        fragmentManager.beginTransaction().replace(R.id.frag_container, detailSummaryFragment).addToBackStack(null).commit();
     }
 
+    // ------ Callbacks from Detail Summary Fragment ------
+    /**
+     * Method to handle saving parking cost added by user
+     * @param parking - cost of parking added by user
+     */
     @Override
-    public void onDetailSummarySwipeDown() {
+    public void onParkingCostUpdated(double parking) {
+        setParkingCost(parking);
+    }
+
+    /**
+     * Method called when detail summary page is swiped down
+     */
+    @Override
+    public void onDetailSummarySwipeDown(int passengers) {
+        // set number of passengers on Activity
+        setNumOfPassengers(passengers);
+
         Log.d("Home_Activity", "onDetailSummarySwipeDown: trying to pop the stack");
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.popBackStack();
 
+    }
+
+    // Getters for fragments
+    public void setParkingCost(double cost) {
+        mParkingCost = cost;
+    }
+
+    public double getParkingCost() {
+        return mParkingCost;
+    }
+
+    public void setNumOfPassengers(int passengers) {
+        mNumOfPassengers = passengers;
+    }
+
+    public int getNumOfPassengers() {
+        return mNumOfPassengers;
     }
 }

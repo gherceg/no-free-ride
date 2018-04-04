@@ -14,7 +14,7 @@ import static android.content.ContentValues.TAG;
 public class RideCalculator {
 
     /**
-     * Calculate the distance between two Lat,Long points
+     * Calculate the distance between two Lat,Long points (No longer user because built into location objects)
      * @param startLoc - Starting location object
      * @param endLoc - Ending location object
      * @return - the distance between two points IN MILES
@@ -51,7 +51,24 @@ public class RideCalculator {
         double totalCost = (milesDriven/milesPerGallon) * gasPricePerGallon;
         // add one to include the driver, break this out to the user?
         return totalCost / (numOfRiders + 1);
+    }
 
+    public static double calculatePricePerRider(int numOfRiders, double milesPerGallon, double gasPricePerGallon, double milesDriven, double insurance, double maintenance) {
+        Log.d(TAG, "pricePerRider: Calculating price for: " + numOfRiders + " riders, " + milesPerGallon + " MPG"  +
+                gasPricePerGallon + " PPG," + milesDriven + " miles driven");
+        // calculate total cost
+        double totalCost = ((milesDriven/milesPerGallon) * gasPricePerGallon) + (insurance*milesDriven * Constants.CONSTANTS.PCT_INSURANCE) + (maintenance*milesDriven);
+        // add one to include the driver, break this out to the user?
+        return totalCost / (numOfRiders + 1);
+    }
+
+    public static double calculatePricePerRider(int numOfRiders, double milesPerGallon, double gasPricePerGallon, double milesDriven, double insurance, double maintenance, double parking) {
+        Log.d(TAG, "pricePerRider: Calculating price for: " + numOfRiders + " riders, " + milesPerGallon + " MPG"  +
+                gasPricePerGallon + " PPG," + milesDriven + " miles driven");
+        // calculate total cost
+        double totalCost = ((milesDriven/milesPerGallon) * gasPricePerGallon) + (insurance*milesDriven * Constants.CONSTANTS.PCT_INSURANCE) + (maintenance*milesDriven) + parking;
+        // add one to include the driver, break this out to the user?
+        return totalCost / (numOfRiders + 1);
     }
 
 }

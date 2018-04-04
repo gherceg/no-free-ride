@@ -7,8 +7,8 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimary">
 
-    <ImageView
-        android:id="@+id/imageView"
+    <ImageButton
+        android:id="@+id/btn_hide_summary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -17,10 +17,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_keyboard_arrow_down_white_24dp" />
+        android:src="@drawable/ic_keyboard_arrow_down_white_24dp"
+        android:background="@color/colorPrimary"/>
 
     <ImageButton
-        android:id="@+id/btn_add_rider"
+        android:id="@+id/btn_detail_add_rider"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginEnd="112dp"
@@ -31,7 +32,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
-        android:id="@+id/btn_remove_rider"
+        android:id="@+id/btn_detail_remove_rider"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginStart="112dp"
@@ -42,17 +43,17 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tv_display_riders"
+        android:id="@+id/tv_detail_display_riders"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="36dp"
         android:text="Passengers"
         android:textColor="@color/white"
         android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="@+id/btn_add_rider"
-        app:layout_constraintStart_toStartOf="@+id/btn_remove_rider"
+        app:layout_constraintEnd_toEndOf="@+id/btn_detail_add_rider"
+        app:layout_constraintStart_toStartOf="@+id/btn_detail_remove_rider"
         app:layout_constraintTop_toBottomOf="@+id/tv_detail_num_of_passengers" />
 
     <TextView
@@ -71,31 +72,33 @@
 
     <CheckBox
         android:id="@+id/cb_insurance"
-        android:layout_width="185dp"
+        android:layout_width="217dp"
         android:layout_height="42dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="72dp"
         android:scaleX="1.5"
         android:scaleY="1.5"
         android:text="Insurance"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.651"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cb_maintenance" />
 
     <CheckBox
         android:id="@+id/cb_maintenance"
-        android:layout_width="185dp"
+        android:layout_width="217dp"
         android:layout_height="42dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="108dp"
+        android:layout_marginTop="56dp"
         android:scaleX="1.5"
         android:scaleY="1.5"
         android:text="Maintenance"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.651"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_display_riders" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_detail_display_riders" />
 
     <TextView
         android:id="@+id/tv_detail_price_per_rider"
@@ -111,6 +114,36 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         tools:text="$0.40" />
+
+    <EditText
+        android:id="@+id/et_add_parking"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="40dp"
+        android:ems="10"
+        android:hint="@string/add_parking"
+        android:inputType="numberDecimal"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cb_insurance" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="20dp"
+        android:layout_height="42dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:text="$"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="@+id/et_add_parking"
+        app:layout_constraintEnd_toStartOf="@+id/et_add_parking"
+        app:layout_constraintTop_toTopOf="@+id/et_add_parking"
+        app:layout_constraintVertical_bias="0.74" />
 
 
 </android.support.constraint.ConstraintLayout>

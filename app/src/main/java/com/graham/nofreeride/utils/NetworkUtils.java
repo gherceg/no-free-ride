@@ -2,6 +2,7 @@ package com.graham.nofreeride.utils;
 
 import android.location.Location;
 import android.net.Uri;
+import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -15,6 +16,8 @@ import java.net.URL;
 import java.util.ArrayList;
 
 import javax.net.ssl.HttpsURLConnection;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Created by grahamherceg on 2/14/18.
@@ -76,15 +79,19 @@ public class NetworkUtils {
 //        StringBuilder pointsBuilder = new StringBuilder(size);
 //        StringBuilder individualPointBuilder = new StringBuilder(20);
 //        for(int i = 0; i < latLngs.size(); i++) {
+//            if(latLngs.get(i) != null) {
+//                individualPointBuilder.append(Double.toString(latLngs.get(i).latitude));
+//                individualPointBuilder.append(",");
+//                individualPointBuilder.append(Double.toString(latLngs.get(i).longitude));
+//                // as long as it is not the last element in array, add a pipe in between params
+//                if(i != latLngs.size() - 1) {
+//                    individualPointBuilder.append("|");
+//                }
 //
-//            individualPointBuilder.append(Double.toString(latLngs.get(i).latitude));
-//            individualPointBuilder.append(",");
-//            individualPointBuilder.append(Double.toString(latLngs.get(i).longitude));
-//            if(i != latLngs.size() -1) {
-//                individualPointBuilder.append("|");
+//                pointsBuilder.append(individualPointBuilder.toString());
+//            } else {
+//                Log.d(TAG, "buildRoadsParam: Invalid latLng object. Not adding to params.");
 //            }
-//
-//            pointsBuilder.append(individualPointBuilder.toString());
 //        }
 //        String points = pointsBuilder.toString();
 //        StringBuilder urlBuilder = new StringBuilder(points.length() + 20);

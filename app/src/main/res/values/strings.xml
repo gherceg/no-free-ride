@@ -8,8 +8,17 @@
     <string name="pref_mpg_key">mpg</string>
     <string name="pref_mpg_title">MPG</string>
     <string name="pref_insurance_price_key">insurance_price</string>
-    <string name="pref_insurance_price_title">Insurance (per Month)</string>
+    <string name="pref_insurance_price_title">Insurance (per month)</string>
     <string name="menu_settings_title">Settings</string>
     <string name="stop_drive_btn_text">End Drive</string>
     <string name="toggle_stop_drive_btn">End Drive</string>
+    <string name="pref_maintenance_title">Maintenance (avg per mile)</string>
+    <string name="pref_maintenance_key">maintenance</string>
+    <string name="pref_include_maintenance_summary">Include maintenance costs</string>
+    <string name="pref_include_maintenance_title">Include Maintenance</string>
+    <string name="pref_include_maintenance_key">include_maintenance</string>
+    <string name="pref_include_insurance_title">Include Insurance</string>
+    <string name="pref_include_insurance_key">include_insurance</string>
+    <string name="pref_include_insurance_summary">Include insurance costs</string>
+    <string name="add_parking">Add Parking</string>
 </resources>

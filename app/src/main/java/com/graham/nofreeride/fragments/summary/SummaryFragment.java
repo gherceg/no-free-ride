@@ -34,6 +34,7 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.RoundCap;
 import com.graham.nofreeride.R;
+import com.graham.nofreeride.activities.HomeActivity;
 import com.graham.nofreeride.fragments.home.HomeFragment;
 import com.graham.nofreeride.utils.ParcelableLocations;
 
@@ -47,7 +48,7 @@ import static android.content.ContentValues.TAG;
  * Created by grahamherceg on 2/10/18.
  */
 
-public class SummaryFragment extends Fragment implements SummaryContract.view, OnMapReadyCallback, View.OnClickListener, View.OnTouchListener {
+public class SummaryFragment extends Fragment implements SummaryContract.view, OnMapReadyCallback, View.OnClickListener {
 
 
     public interface SummaryFragmentListener {
@@ -56,28 +57,27 @@ public class SummaryFragment extends Fragment implements SummaryContract.view, O
 
     View view;
     View statsContainer;
+
     TextView pricePerRiderTextView;
     TextView distanceTextView;
     TextView numOfPassengersTextView;
+
     ImageButton addPassengerButton;
     ImageButton removePassengerButton;
+    ImageButton showDetailSummaryButton;
 
     SummaryController controller;
     private SummaryFragmentListener mListener;
 
-    private double mPricePerRider;
-    private double mDistance;
     private ArrayList<LatLng> mLocations;
 
+    // TODO: add swipe gesture
     private GestureDetector mDetector;
-    private double scrollDistanceY = 0;
-
 
     public static SummaryFragment newInstance(double distance, ArrayList<LatLng> locations) {
         SummaryFragment fragment = new SummaryFragment();
         Bundle args = new Bundle();
         args.putParcelableArrayList("locations",locations);
-        args.putDouble("price_per_rider", 0);
         args.putDouble("distance", distance);
         fragment.setArguments(args);
         return fragment;
@@ -97,18 +97,30 @@ public class SummaryFragment extends Fragment implements SummaryContract.view, O
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // Update parking costs
+        double parking  = ((HomeActivity) getActivity()).getParkingCost();
+        controller.setParkingCost(parking);
+
+        // update number of passengers
+        int numOfPassengers = ((HomeActivity) getActivity()).getNumOfPassengers();
+        controller.setNumOfPassengers(numOfPassengers);
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle args = this.getArguments();
         mLocations = args.getParcelableArrayList("locations");
-        mPricePerRider = args.getDouble("price_per_rider", 0.0);
-        mDistance = args.getDouble("distance", 0.0);
+        double distance = args.getDouble("distance", 0.0);
 
-
+        int passengers = ((HomeActivity)getActivity()).getNumOfPassengers();
+        double parkingCost = ((HomeActivity)getActivity()).getParkingCost();
         // setup controller
-        controller = new SummaryController(this,getContext(),mDistance);
+        controller = new SummaryController(this,getContext(),distance,passengers,parkingCost);
 
     }
 
@@ -122,29 +134,31 @@ public class SummaryFragment extends Fragment implements SummaryContract.view, O
         if(actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeButtonEnabled(true);
+            actionBar.setElevation(4);
         }
 
 
         pricePerRiderTextView = (TextView)view.findViewById(R.id.tv_price_per_rider);
-        String price = String.format(Locale.US,"$%.2f",mPricePerRider);
+        String price = String.format(Locale.US,"$%.2f",controller.getPricePerRider());
         pricePerRiderTextView.setText(price);
-        controller.calculatePricePerRider(1);
+
 
         distanceTextView = (TextView)view.findViewById(R.id.tv_total_distance);
-        String distance = String.format(Locale.US, "%.3f miles",mDistance);
+        String distance = String.format(Locale.US, "%.3f miles",controller.getDistance());
         distanceTextView.setText(distance);
 
-        statsContainer = (View)view.findViewById(R.id.view_stats_container);
-        mDetector = new GestureDetector(getContext(), new GestureListener());
-        statsContainer.setOnTouchListener(this);
 
         numOfPassengersTextView = (TextView)view.findViewById(R.id.tv_num_of_passengers);
         updateNumberOfPassengers(Integer.toString(1));
 
         addPassengerButton = (ImageButton) view.findViewById(R.id.btn_add_rider);
         addPassengerButton.setOnClickListener(this);
+
         removePassengerButton = (ImageButton)view.findViewById(R.id.btn_remove_rider);
         removePassengerButton.setOnClickListener(this);
+
+        showDetailSummaryButton = (ImageButton)view.findViewById(R.id.btn_show_detail_summary);
+        showDetailSummaryButton.setOnClickListener(this);
 
         // setup map fragment
         // request callback when map is ready to be used
@@ -152,6 +166,11 @@ public class SummaryFragment extends Fragment implements SummaryContract.view, O
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        // TODO: implement swipe up/down for summary page
+//        statsContainer = (View)view.findViewById(R.id.view_stats_container);
+//        mDetector = new GestureDetector(getContext(), new GestureListener());
+//        statsContainer.setOnTouchListener(this);
 
         return view;
     }
@@ -170,7 +189,6 @@ public class SummaryFragment extends Fragment implements SummaryContract.view, O
     @Override
     public void enableAddPassengersButton() {
         addPassengerButton.setEnabled(true);
-
     }
 
     @Override
@@ -193,14 +211,20 @@ public class SummaryFragment extends Fragment implements SummaryContract.view, O
     @Override
     public void onMapReady(GoogleMap googleMap) {
         // setup initial view of map, should be based on locations received from drive
-//        LatLng miami = new LatLng(25.76, -80.1918);
+        
         // Need to check our passed in array
         if(mLocations == null || mLocations.size() <= 0) {
             // we can't draw anything
+            Log.d(TAG, "onMapReady: should check for this before reaching this page");
         } else {
             LatLng start = mLocations.get(0);
+            LatLng end = mLocations.get(mLocations.size() - 1);
             googleMap.addMarker(new MarkerOptions().position(start)
-                    .title("Marker in Miami"));
+                    .title("Start"));
+
+            googleMap.addMarker(new MarkerOptions().position(end)
+                    .title("End"));
+
             googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
             Polyline polyline1 = googleMap.addPolyline(new PolylineOptions()
@@ -230,45 +254,50 @@ public class SummaryFragment extends Fragment implements SummaryContract.view, O
                 Log.d(TAG, "onClick: Remove a passenger!");
                 controller.removePassengerPressed();
                 break;
+            case R.id.btn_show_detail_summary:
+                mListener.onSummarySwipeUp(controller.getDistance(),controller.getNumOfPassengers());
+                break;
         }
     }
 
+    // TODO: implement swipe up/down for summary page
+    // ------- FOR FUTURE IMPLEMENTATION
     // pass onto gesture detector
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        if(v.getId() == R.id.view_stats_container) {
-            return mDetector.onTouchEvent(event);
-        }
-        return false;
-    }
-
-
-    // Hanlding gestures
-    private class GestureListener extends GestureDetector.SimpleOnGestureListener {
-        @Override
-        public boolean onDown(MotionEvent e) {
-            Log.d(TAG, "onDown: Pressed the view");
-            return true;
-        }
-
-        @Override
-        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-            Log.d(TAG, "onScroll: Scrolling with x: " + distanceX + " and y: " + distanceY);
-            scrollDistanceY += distanceY;
-            if(scrollDistanceY > 1000) {
-                mListener.onSummarySwipeUp(mDistance,controller.numOfPassengers);
-                // reset scroll distance
-                scrollDistanceY = 0;
-            }
-            return super.onScroll(e1, e2, distanceX, distanceY);
-        }
-
-        @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            Log.d(TAG, "onFling: Flung with velocity " + velocityX + " and " + velocityY);
-
-            return super.onFling(e1, e2, velocityX, velocityY);
-        }
-    }
+//    @Override
+//    public boolean onTouch(View v, MotionEvent event) {
+//        if(v.getId() == R.id.view_stats_container) {
+//            return mDetector.onTouchEvent(event);
+//        }
+//        return false;
+//    }
+//
+//
+//    // Hanlding gestures
+//    private class GestureListener extends GestureDetector.SimpleOnGestureListener {
+//        @Override
+//        public boolean onDown(MotionEvent e) {
+//            Log.d(TAG, "onDown: Pressed the view");
+//            return true;
+//        }
+//
+//        @Override
+//        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+//            Log.d(TAG, "onScroll: Scrolling with x: " + distanceX + " and y: " + distanceY);
+//            scrollDistanceY += distanceY;
+//            if(scrollDistanceY > 1000) {
+//                mListener.onSummarySwipeUp(mDistance,controller.numOfPassengers);
+//                // reset scroll distance
+//                scrollDistanceY = 0;
+//            }
+//            return super.onScroll(e1, e2, distanceX, distanceY);
+//        }
+//
+//        @Override
+//        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+//            Log.d(TAG, "onFling: Flung with velocity " + velocityX + " and " + velocityY);
+//
+//            return super.onFling(e1, e2, velocityX, velocityY);
+//        }
+//    }
 
 }

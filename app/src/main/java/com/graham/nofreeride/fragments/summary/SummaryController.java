@@ -3,11 +3,15 @@ package com.graham.nofreeride.fragments.summary;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.graham.nofreeride.R;
+import com.graham.nofreeride.utils.Constants;
 import com.graham.nofreeride.utils.RideCalculator;
 
 import java.util.Locale;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Created by grahamherceg on 2/10/18.
@@ -15,28 +19,64 @@ import java.util.Locale;
 
 public class SummaryController {
 
-    private static int MIN_PASSENGERS = 0;
-    private static int MAX_PASSENGERS = 5;
-
     SharedPreferences sharedPreferences;
     Context context;
     SummaryContract.view view;
 
-    private double mDistance;
+
+    private double distance;
+    public double getDistance() {
+        return distance;
+    }
+
+    private double pricePerRider;
+
+    public double getPricePerRider() {
+        return pricePerRider;
+    }
 
     private double mMpg;
     private double mPpg;
+    private boolean mIncludeInsurance;
+    private boolean mIncludeMaintenance;
     private double mInsurancePrice;
+    private double mMaintenancePrice;
 
-    public int numOfPassengers;
+
+    private int numOfPassengers;
+    public int getNumOfPassengers() {
+        return numOfPassengers;
+    }
+
+    public void setNumOfPassengers(int numOfPassengers) {
+        this.numOfPassengers = numOfPassengers;
+        view.updateNumberOfPassengers(Integer.toString(numOfPassengers));
+        calculatePricePerRider();
+    }
+
+    private double parkingCost;
+    public double getParkingCost() {
+        return parkingCost;
+    }
+
+    public void setParkingCost(double parkingCost) {
+        this.parkingCost = parkingCost;
+        calculatePricePerRider();
+    }
+
+
 
     private boolean mRemoveButtonDisabled = false;
     private boolean mAddButtonDisabled = false;
 
-    public SummaryController(SummaryContract.view view, Context context, double mDistance) {
+    public SummaryController(SummaryContract.view view, Context context, double mDistance, int numOfPassengers, double parkingCost) {
         this.view = view;
         this.context = context;
-        this.mDistance = mDistance;
+
+        // parameters for calculating drive costs
+        this.distance = mDistance;
+        this.numOfPassengers = numOfPassengers;
+        this.parkingCost = parkingCost;
 
         // get shared preferences
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -44,22 +84,27 @@ public class SummaryController {
         mMpg = Double.parseDouble(sharedPreferences.getString(context.getString(R.string.pref_mpg_key),"0"));
         mPpg = Double.parseDouble(sharedPreferences.getString(context.getString(R.string.pref_ppg_key),"0"));
         mInsurancePrice = Double.parseDouble(sharedPreferences.getString(context.getString(R.string.pref_insurance_price_key),"0"));
+        mMaintenancePrice = Double.parseDouble(sharedPreferences.getString(context.getString(R.string.pref_maintenance_key),"0"));
+        mIncludeInsurance = sharedPreferences.getBoolean(context.getString(R.string.pref_include_insurance_key),false);
+        mIncludeMaintenance = sharedPreferences.getBoolean(context.getString(R.string.pref_include_maintenance_key),false);
 
-        // default # of passengers to 1
-        numOfPassengers = 1;
     }
 
 
-    public void calculatePricePerRider(int numOfRiders) {
-        double price = RideCalculator.calculatePricePerRider(numOfRiders,mMpg,mPpg,mDistance);
-        String formattedPrice = String.format(Locale.US, "$%.2f",price);
+    public void calculatePricePerRider() {
+        double insurancePrice = mIncludeInsurance ? mInsurancePrice : 0;
+        double maintenancePrice = mIncludeMaintenance ? mMaintenancePrice : 0;
+        double price = RideCalculator.calculatePricePerRider(numOfPassengers,mMpg,mPpg,distance,insurancePrice,maintenancePrice,parkingCost);
+        pricePerRider = price;
 
+        // make formatted string verison of price
+        String formattedPrice = String.format(Locale.US, "$%.2f",price);
         // update UI
         view.updatePriceTextView(formattedPrice);
     }
 
     public void addPassengerPressed() {
-        if(numOfPassengers >= MAX_PASSENGERS) {
+        if(numOfPassengers >= Constants.CONSTANTS.MAX_PASSENGERS) {
             view.disableAddPassengersButton();
             mAddButtonDisabled = true;
             return;
@@ -69,13 +114,16 @@ public class SummaryController {
             view.enableRemovePassengersButton();
             mRemoveButtonDisabled = false;
         }
-        numOfPassengers++;
-        calculatePricePerRider(numOfPassengers);
-        view.updateNumberOfPassengers(Integer.toString(numOfPassengers));
+        setNumOfPassengers(numOfPassengers + 1);
+//        numOfPassengers++;
+//        view.updateNumberOfPassengers(Integer.toString(numOfPassengers));
+//
+//        // calculate new price
+//        calculatePricePerRider();
     }
 
     public void removePassengerPressed() {
-        if(numOfPassengers <= MIN_PASSENGERS) {
+        if(numOfPassengers <= Constants.CONSTANTS.MIN_PASSENGERS) {
             view.disableRemovePassengerButton();
             mRemoveButtonDisabled = true;
             return;
@@ -85,9 +133,12 @@ public class SummaryController {
             view.enableAddPassengersButton();
             mAddButtonDisabled = false;
         }
+        setNumOfPassengers(numOfPassengers - 1);
+//        numOfPassengers--;
+//        view.updateNumberOfPassengers(Integer.toString(numOfPassengers));
+//
+//        // calculate new price
+//        calculatePricePerRider();
 
-        numOfPassengers--;
-        calculatePricePerRider(numOfPassengers);
-        view.updateNumberOfPassengers(Integer.toString(numOfPassengers));
     }
 }

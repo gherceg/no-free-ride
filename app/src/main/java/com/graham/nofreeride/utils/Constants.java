@@ -20,4 +20,10 @@ public class Constants {
         int FOREGROUND_SERVICE = 101;
         String FOREGROUND_CHANNEL_ID = "M_CH_ID";
     }
+
+    public interface CONSTANTS {
+        int MAX_PASSENGERS = 5;
+        int MIN_PASSENGERS = 0;
+        double PCT_INSURANCE = 0.0002;
+    }
 }
