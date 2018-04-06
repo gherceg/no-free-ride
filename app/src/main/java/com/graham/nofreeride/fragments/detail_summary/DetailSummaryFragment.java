@@ -29,6 +29,8 @@ import com.graham.nofreeride.R;
 import com.graham.nofreeride.activities.HomeActivity;
 import com.graham.nofreeride.fragments.summary.SummaryFragment;
 import com.graham.nofreeride.utils.Constants;
+import com.graham.nofreeride.utils.EditTextBackEvent;
+import com.graham.nofreeride.utils.EditTextImeBackListener;
 
 import org.w3c.dom.Text;
 
@@ -40,7 +42,7 @@ import static android.content.ContentValues.TAG;
  * Created by grahamherceg on 3/26/18.
  */
 
-public class DetailSummaryFragment extends Fragment implements View.OnClickListener, DetailSummaryContract.view, TextWatcher, View.OnFocusChangeListener {
+public class DetailSummaryFragment extends Fragment implements View.OnClickListener, DetailSummaryContract.view, EditTextImeBackListener {
 
 
     public interface DetailSummaryFragmentListener {
@@ -62,7 +64,7 @@ public class DetailSummaryFragment extends Fragment implements View.OnClickListe
 
     CheckBox maintenanceCheckBox;
     CheckBox insuranceCheckBox;
-    EditText addParkingEditText;
+    EditTextBackEvent addParkingEditText;
 
 
     private double mPricePerRider;
@@ -185,9 +187,8 @@ public class DetailSummaryFragment extends Fragment implements View.OnClickListe
         maintenanceCheckBox.setOnClickListener(this);
         maintenanceCheckBox.setChecked(mIncludeMaintenance);
 
-        addParkingEditText = (EditText)view.findViewById(R.id.et_add_parking);
-        addParkingEditText.addTextChangedListener(this);
-        addParkingEditText.setOnFocusChangeListener(this);
+        addParkingEditText = (EditTextBackEvent) view.findViewById(R.id.et_add_parking);
+        addParkingEditText.setOnEditTextImeBackListener(this);
 
         // update price per rider
         controller.calculatePricePerRider();
@@ -225,6 +226,17 @@ public class DetailSummaryFragment extends Fragment implements View.OnClickListe
 
 
     @Override
+    public void onImeBack(EditTextBackEvent ctrl, String text) {
+        if(!text.isEmpty()) {
+            double cost = Double.parseDouble(text);
+            controller.setParkingCost(cost);
+            mListener.onParkingCostUpdated(cost);
+        }
+    }
+
+
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.cb_insurance:
@@ -246,45 +258,8 @@ public class DetailSummaryFragment extends Fragment implements View.OnClickListe
         }
     }
 
-    @Override
-    public void onFocusChange(View v, boolean hasFocus) {
-        switch(v.getId()) {
-            case R.id.et_add_parking:
-                if (!hasFocus) {
-                    String parkingCost = addParkingEditText.getText().toString();
-                    if(!parkingCost.isEmpty()) {
-                        double cost = Double.parseDouble(parkingCost);
-                        controller.setParkingCost(cost);
-                        mListener.onParkingCostUpdated(cost);
-                    }
-                }
-                break;
-            default:
-                break;
-        }
-    }
 
-    // ------- EDIT TEXT LISTENER -------------
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        // don't care
-    }
 
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
-        // don't care
-    }
-
-    @Override
-    public void afterTextChanged(Editable s) {
-        // care
-//        String parkingCost = addParkingEditText.getText().toString();
-//        if(!parkingCost.isEmpty()) {
-//            double cost = Double.parseDouble(parkingCost);
-//            controller.setParkingCost(cost);
-//            mListener.onParkingCostUpdated(cost);
-//        }
-    }
 
     // ----------------------------
 

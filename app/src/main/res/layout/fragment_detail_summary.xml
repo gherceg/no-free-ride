@@ -115,7 +115,7 @@
         app:layout_constraintStart_toStartOf="parent"
         tools:text="$0.40" />
 
-    <EditText
+    <com.graham.nofreeride.utils.EditTextBackEvent
         android:id="@+id/et_add_parking"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
