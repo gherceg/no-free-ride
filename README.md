@@ -14,6 +14,6 @@ Uses Google Maps API to draw the drive route once complete.
 
 # Future Additions
 
-While the existing polyline works well (a location must be within a certain accuary threshold to be added), the next improvement is using Google Maps Roads API to snap points to the road resulting in a more accurate distance calculation. 
+While the existing polyline works well (a location must be within a certain accuracy threshold to be added), the next improvement is using Google Maps Roads API to snap points to the road resulting in a more accurate distance calculation. 
 
 Using myGasFeed API to determine nearby gas prices based on location.
