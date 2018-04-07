@@ -12,5 +12,13 @@ public interface DetailSummaryContract {
         void updatePricePerRiderText(String price);
 
         void updateParkingCostEditText(double cost);
+
+        void enableAddPassengerButton();
+
+        void enableRemovePassengerButton();
+
+        void disableRemovePassengerButton();
+
+        void disableAddPassengerButton();
     }
 }

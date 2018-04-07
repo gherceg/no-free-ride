@@ -37,6 +37,8 @@ public class DetailSummaryController {
 
     private double distance;
 
+
+
     public double getDistance() {
         return distance;
     }
@@ -48,6 +50,7 @@ public class DetailSummaryController {
 
     public void setNumOfPassengers(int numOfPassengers) {
         this.numOfPassengers = numOfPassengers;
+        checkNumberOfPassengers();
         mView.updateNumberOfPassengers(Integer.toString(numOfPassengers));
         calculatePricePerRider();
     }
@@ -74,41 +77,33 @@ public class DetailSummaryController {
 
     }
 
+    private void checkNumberOfPassengers() {
+        if(numOfPassengers >= Constants.CONSTANTS.MAX_PASSENGERS) {
+            mView.disableAddPassengerButton();
+            mAddButtonDisabled = true;
+        } else if(numOfPassengers <= Constants.CONSTANTS.MIN_PASSENGERS) {
+            mView.disableRemovePassengerButton();
+            mRemoveButtonDisabled = true;
+        }
+    }
+
 
     public void onAddPassengerButtonPressed() {
-        if(numOfPassengers >= Constants.CONSTANTS.MAX_PASSENGERS) {
-//            mView.disableAddPassengersButton();
-            mAddButtonDisabled = true;
-            return;
-        }
+        setNumOfPassengers(numOfPassengers + 1);
 
         if(mRemoveButtonDisabled) {
-//            mView.enableRemovePassengersButton();
+            mView.enableRemovePassengerButton();
             mRemoveButtonDisabled = false;
         }
-        numOfPassengers++;
-        mView.updateNumberOfPassengers(Integer.toString(numOfPassengers));
-
-        // calculate new price per rider
-        calculatePricePerRider();
-
     }
 
     public void onRemovePassengerButtonPressed() {
-        if(numOfPassengers <= Constants.CONSTANTS.MIN_PASSENGERS) {
-            mRemoveButtonDisabled = true;
-            return;
-        }
+        setNumOfPassengers(numOfPassengers - 1);
 
         if(mAddButtonDisabled) {
+            mView.enableAddPassengerButton();
             mAddButtonDisabled = false;
         }
-        numOfPassengers--;
-        mView.updateNumberOfPassengers(Integer.toString(numOfPassengers));
-
-        // calculate new price per rider
-        calculatePricePerRider();
-
     }
 
     /**

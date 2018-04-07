@@ -101,6 +101,7 @@ public class DetailSummaryFragment extends Fragment implements View.OnClickListe
         double parkingCost = ((HomeActivity)getActivity()).getParkingCost();
         controller.setParkingCost(parkingCost);
         int passengers = ((HomeActivity)getActivity()).getNumOfPassengers();
+        // handle logic for passengers at min or max limits
         controller.setNumOfPassengers(passengers);
     }
 
@@ -208,6 +209,32 @@ public class DetailSummaryFragment extends Fragment implements View.OnClickListe
             addParkingEditText.setText(null);
         }
     }
+
+    @Override
+    public void enableAddPassengerButton() {
+        addPassengerButton.setEnabled(true);
+        addPassengerButton.setColorFilter(getResources().getColor(R.color.white,null));
+    }
+
+    @Override
+    public void disableAddPassengerButton() {
+        addPassengerButton.setEnabled(false);
+        addPassengerButton.setColorFilter(getResources().getColor(R.color.grey,null));
+    }
+
+    @Override
+    public void enableRemovePassengerButton() {
+        removePassengerButton.setEnabled(true);
+        removePassengerButton.setColorFilter(getResources().getColor(R.color.white,null));
+    }
+
+    @Override
+    public void disableRemovePassengerButton() {
+        removePassengerButton.setEnabled(false);
+        removePassengerButton.setColorFilter(getResources().getColor(R.color.grey,null));
+    }
+
+
 
 
     /**

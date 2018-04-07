@@ -50,6 +50,7 @@ public class SummaryController {
 
     public void setNumOfPassengers(int numOfPassengers) {
         this.numOfPassengers = numOfPassengers;
+        checkNumberOfPassengers();
         view.updateNumberOfPassengers(Integer.toString(numOfPassengers));
         calculatePricePerRider();
     }
@@ -104,41 +105,30 @@ public class SummaryController {
     }
 
     public void addPassengerPressed() {
-        if(numOfPassengers >= Constants.CONSTANTS.MAX_PASSENGERS) {
-            view.disableAddPassengersButton();
-            mAddButtonDisabled = true;
-            return;
-        }
+        setNumOfPassengers(numOfPassengers + 1);
 
         if(mRemoveButtonDisabled) {
             view.enableRemovePassengersButton();
             mRemoveButtonDisabled = false;
         }
-        setNumOfPassengers(numOfPassengers + 1);
-//        numOfPassengers++;
-//        view.updateNumberOfPassengers(Integer.toString(numOfPassengers));
-//
-//        // calculate new price
-//        calculatePricePerRider();
     }
 
     public void removePassengerPressed() {
-        if(numOfPassengers <= Constants.CONSTANTS.MIN_PASSENGERS) {
-            view.disableRemovePassengerButton();
-            mRemoveButtonDisabled = true;
-            return;
-        }
+        setNumOfPassengers(numOfPassengers - 1);
 
         if(mAddButtonDisabled) {
             view.enableAddPassengersButton();
             mAddButtonDisabled = false;
         }
-        setNumOfPassengers(numOfPassengers - 1);
-//        numOfPassengers--;
-//        view.updateNumberOfPassengers(Integer.toString(numOfPassengers));
-//
-//        // calculate new price
-//        calculatePricePerRider();
+    }
 
+    private void checkNumberOfPassengers() {
+        if(numOfPassengers >= Constants.CONSTANTS.MAX_PASSENGERS) {
+            view.disableAddPassengersButton();
+            mAddButtonDisabled = true;
+        } else if(numOfPassengers <= Constants.CONSTANTS.MIN_PASSENGERS) {
+            view.disableRemovePassengerButton();
+            mRemoveButtonDisabled = true;
+        }
     }
 }

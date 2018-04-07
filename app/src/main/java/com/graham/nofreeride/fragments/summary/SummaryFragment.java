@@ -189,23 +189,27 @@ public class SummaryFragment extends Fragment implements SummaryContract.view, O
     @Override
     public void enableAddPassengersButton() {
         addPassengerButton.setEnabled(true);
+        addPassengerButton.setColorFilter(getResources().getColor(R.color.white,null));
     }
 
     @Override
     public void disableAddPassengersButton() {
         addPassengerButton.setEnabled(false);
+        addPassengerButton.setColorFilter(getResources().getColor(R.color.grey,null));
     }
 
     @Override
     public void disableRemovePassengerButton() {
         removePassengerButton.setEnabled(false);
-        removePassengerButton.setBackground(getResources().getDrawable(R.drawable.ic_remove_grey_24dp, null));
+        removePassengerButton.setColorFilter(getResources().getColor(R.color.grey,null));
+//        removePassengerButton.setBackground(getResources().getDrawable(R.drawable.ic_remove_grey_24dp, null));
     }
 
     @Override
     public void enableRemovePassengersButton() {
         removePassengerButton.setEnabled(true);
-        removePassengerButton.setBackground(getResources().getDrawable(R.drawable.ic_remove_white_24dp,null));
+        removePassengerButton.setColorFilter(getResources().getColor(R.color.white,null));
+//        removePassengerButton.setBackground(getResources().getDrawable(R.drawable.ic_remove_white_24dp,null));
     }
 
     @Override
