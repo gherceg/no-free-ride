@@ -9,9 +9,9 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_car_icon"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_car_icon_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
@@ -27,7 +27,7 @@
             android:value="@string/google_maps_key" />
 
 
-        <service android:name=".utils.LocationTrackingService" />
+        <service android:name=".services.LocationTrackingService" />
 
         <activity android:name=".activities.HomeActivity">
             <intent-filter>

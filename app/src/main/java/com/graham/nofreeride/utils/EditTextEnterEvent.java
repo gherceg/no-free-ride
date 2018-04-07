@@ -9,19 +9,19 @@ import android.view.KeyEvent;
  * Created by grahamherceg on 4/5/18.
  */
 
-public class EditTextBackEvent extends AppCompatEditText {
+public class EditTextEnterEvent extends AppCompatEditText {
 
     private EditTextImeBackListener mOnImeBack;
 
-    public EditTextBackEvent(Context context) {
+    public EditTextEnterEvent(Context context) {
         super(context);
     }
 
-    public EditTextBackEvent(Context context, AttributeSet attrs) {
+    public EditTextEnterEvent(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public EditTextBackEvent(Context context, AttributeSet attrs, int defStyle) {
+    public EditTextEnterEvent(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 

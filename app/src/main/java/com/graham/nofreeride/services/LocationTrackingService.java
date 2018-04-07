@@ -1,4 +1,4 @@
-package com.graham.nofreeride.utils;
+package com.graham.nofreeride.services;
 
 import android.Manifest;
 import android.app.Notification;
@@ -10,20 +10,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationManager;
-import android.os.Binder;
 import android.os.Build;
-import android.os.HandlerThread;
 import android.os.IBinder;
-import android.os.Looper;
-import android.os.Process;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -35,8 +29,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.graham.nofreeride.R;
 import com.graham.nofreeride.activities.HomeActivity;
+import com.graham.nofreeride.utils.Constants;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import static android.content.ContentValues.TAG;
@@ -125,9 +119,10 @@ public class LocationTrackingService extends Service {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
         // Add Stop button intent to notification
-        Intent stopIntent = new Intent(this, LocationTrackingService.class);
-        stopIntent.setAction(Constants.ACTION.EXTERNALSTOP_ACTION);
-        PendingIntent pStopIntent = PendingIntent.getService(this, 0, stopIntent, 0);
+        // TODO: need to fix crash from pressing stop when app is closed...look into activity state overrides
+//        Intent stopIntent = new Intent(this, LocationTrackingService.class);
+//        stopIntent.setAction(Constants.ACTION.EXTERNALSTOP_ACTION);
+//        PendingIntent pStopIntent = PendingIntent.getService(this, 0, stopIntent, 0);
 
 
         // Setup Notification
@@ -145,14 +140,13 @@ public class LocationTrackingService extends Service {
             ((NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE)).createNotificationChannel(notificationChannel);
         }
 
-        Notification notification = builder.setContentTitle("Drive Tracking")
-                .setTicker("What's the ticker")
-                .setContentText("Driven: ")
+        Notification notification = builder.setContentTitle("Drive In Progress")
+                .setTicker("Driving")
                 .setSmallIcon(R.drawable.ic_drive_notification)
                 .setContentIntent(pendingIntent)
                 .setOngoing(true)
-                .addAction(android.R.drawable.ic_menu_share,"Stop",pStopIntent)
                 .build();
+//                .addAction(android.R.drawable.ic_menu_share,"Stop",pStopIntent)
 
 
 

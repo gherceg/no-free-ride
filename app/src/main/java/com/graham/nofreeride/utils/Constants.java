@@ -22,7 +22,7 @@ public class Constants {
     }
 
     public interface CONSTANTS {
-        int MAX_PASSENGERS = 5;
+        int MAX_PASSENGERS = 7;
         int MIN_PASSENGERS = 0;
         double PCT_INSURANCE = 0.0002;
     }

@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.location.Location;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -21,12 +21,12 @@ import com.graham.nofreeride.fragments.detail_summary.DetailSummaryFragment;
 import com.graham.nofreeride.fragments.home.HomeFragment;
 import com.graham.nofreeride.fragments.summary.SummaryFragment;
 import com.graham.nofreeride.utils.Constants;
-import com.graham.nofreeride.utils.LocationTrackingService;
+import com.graham.nofreeride.services.LocationTrackingService;
 
 import java.util.ArrayList;
 
 /**
- * Home Activity class responsible for managing fragments and receiving broadcasts from services
+ * Home Activity class responsible for managing fragments, starting/stopping service, and receiving broadcasts from services
  */
 
 public class HomeActivity extends AppCompatActivity implements HomeFragment.HomeFragmentListener, SummaryFragment.SummaryFragmentListener, DetailSummaryFragment.DetailSummaryFragmentListener {
@@ -58,9 +58,11 @@ public class HomeActivity extends AppCompatActivity implements HomeFragment.Home
         setSupportActionBar(toolbar);
         if(getSupportActionBar() != null) {
             getSupportActionBar().setElevation(0);
+            getSupportActionBar().setLogo(R.mipmap.ic_car_icon_round);
+            getSupportActionBar().setTitle("");
         }
 
-        // get the home fragment
+        // create and set the home fragment
         homeFragment = new HomeFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
@@ -72,13 +74,13 @@ public class HomeActivity extends AppCompatActivity implements HomeFragment.Home
         LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(this);
         broadcastManager.registerReceiver(mLocationReceiver, new IntentFilter(Constants.ACTION.SENDLOCATIONS_ACTION));
         broadcastManager.registerReceiver(mLocationReceiver, new IntentFilter(Constants.ACTION.STOPMESSAGE_ACTION));
-//        LocalBroadcastManager.getInstance(this).registerReceiver(mLocationReceiver, new IntentFilter(Constants.ACTION.SENDLOCATIONS_ACTION));
-//        LocalBroadcastManager.getInstance(this).registerReceiver(mLocationReceiver, new IntentFilter(Constants.ACTION.STOPMESSAGE_ACTION));
     }
 
 
     private BroadcastReceiver mLocationReceiver = new BroadcastReceiver() {
         public static final String TAG = "Broadcast Receiver";
+
+
         @Override
         public void onReceive(Context context, Intent intent) {
             if(intent.getAction().equals(Constants.ACTION.SENDLOCATIONS_ACTION)) {
@@ -186,8 +188,9 @@ public class HomeActivity extends AppCompatActivity implements HomeFragment.Home
      */
     private void showSummaryPage(ArrayList<LatLng> latLngs, double distance) {
         Log.d(LOG_TAG, "showSummaryPage: trying to show summary page");
+        summaryFragment = SummaryFragment.newInstance(distance,latLngs);
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.frag_container, SummaryFragment.newInstance(distance,latLngs)).addToBackStack(null).commit();
+        fragmentManager.beginTransaction().replace(R.id.frag_container, summaryFragment).addToBackStack(null).commit();
     }
 
     // ------ Callbacks from Summary Fragment ------

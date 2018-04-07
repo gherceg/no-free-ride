@@ -1,19 +1,6 @@
 package com.graham.nofreeride.fragments.home;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.location.Location;
-import android.util.Log;
-
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.maps.model.LatLng;
-import com.graham.nofreeride.Model.CompletionBlock;
-import com.graham.nofreeride.Model.LocationTracker;
-import com.graham.nofreeride.utils.RideCalculator;
-
-import java.util.ArrayList;
-
-import static android.content.ContentValues.TAG;
 
 /**
  * Created by grahamherceg on 2/2/18.

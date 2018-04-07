@@ -5,5 +5,5 @@ package com.graham.nofreeride.utils;
  */
 
 public interface EditTextImeBackListener {
-    void onImeBack(EditTextBackEvent ctrl, String text);
+    void onImeBack(EditTextEnterEvent ctrl, String text);
 }

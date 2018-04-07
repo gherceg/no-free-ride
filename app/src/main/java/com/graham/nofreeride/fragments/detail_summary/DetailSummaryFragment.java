@@ -2,41 +2,27 @@ package com.graham.nofreeride.fragments.detail_summary;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.GestureDetector;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.graham.nofreeride.R;
 import com.graham.nofreeride.activities.HomeActivity;
-import com.graham.nofreeride.fragments.summary.SummaryFragment;
 import com.graham.nofreeride.utils.Constants;
-import com.graham.nofreeride.utils.EditTextBackEvent;
+import com.graham.nofreeride.utils.EditTextEnterEvent;
 import com.graham.nofreeride.utils.EditTextImeBackListener;
 
-import org.w3c.dom.Text;
-
 import java.util.Locale;
-
-import static android.content.ContentValues.TAG;
 
 /**
  * Created by grahamherceg on 3/26/18.
@@ -64,7 +50,7 @@ public class DetailSummaryFragment extends Fragment implements View.OnClickListe
 
     CheckBox maintenanceCheckBox;
     CheckBox insuranceCheckBox;
-    EditTextBackEvent addParkingEditText;
+    EditTextEnterEvent addParkingEditText;
 
 
     private double mPricePerRider;
@@ -187,7 +173,7 @@ public class DetailSummaryFragment extends Fragment implements View.OnClickListe
         maintenanceCheckBox.setOnClickListener(this);
         maintenanceCheckBox.setChecked(mIncludeMaintenance);
 
-        addParkingEditText = (EditTextBackEvent) view.findViewById(R.id.et_add_parking);
+        addParkingEditText = (EditTextEnterEvent) view.findViewById(R.id.et_add_parking);
         addParkingEditText.setOnEditTextImeBackListener(this);
 
         // update price per rider
@@ -221,12 +207,16 @@ public class DetailSummaryFragment extends Fragment implements View.OnClickListe
             // show the hint again?
             addParkingEditText.setText(null);
         }
-
     }
 
 
+    /**
+     * Callback method for EditTextEnterEvent when enter is pressed
+     * @param ctrl - reference to EditTextEnterEvent object (only have one right for this class right now)
+     * @param text - text contained in EditText
+     */
     @Override
-    public void onImeBack(EditTextBackEvent ctrl, String text) {
+    public void onImeBack(EditTextEnterEvent ctrl, String text) {
         if(!text.isEmpty()) {
             double cost = Double.parseDouble(text);
             controller.setParkingCost(cost);
