@@ -4,7 +4,8 @@ An Android application that helps users split the costs of owning/maintaining/dr
 that wants your friends to stop freeloading off of your car, or a frequent passenger looking to chip in, this will help.
 At the bare minimum it supports gas costs, but insurance, maintenance, and parking can all be added if desired. 
 
-<img src="https://raw.githubusercontent.com/gherceg/no-free-ride/master/screenshots/pixel_2_xl_screen.png" width="400">
+<img src="https://raw.githubusercontent.com/gherceg/no-free-ride/dev/screenshots/pixel_2_xl_home_screenshot.png" width="300">
+<img src="https://raw.githubusercontent.com/gherceg/no-free-ride/master/screenshots/pixel_2_xl_screen.png" width="300">
 
 # Current Features
 Uses Android's LocationServices to track user's location for the duration of the drive.
