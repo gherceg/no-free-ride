@@ -108,6 +108,9 @@ public class SummaryFragment extends Fragment implements SummaryContract.view, O
         // update number of passengers
         int numOfPassengers = ((HomeActivity) getActivity()).getNumOfPassengers();
         controller.setNumOfPassengers(numOfPassengers);
+
+        // refresh loads shared preferences
+        controller.refreshSharedPreferences();
     }
 
     @Override
@@ -149,7 +152,8 @@ public class SummaryFragment extends Fragment implements SummaryContract.view, O
 
 
         numOfPassengersTextView = (TextView)view.findViewById(R.id.tv_num_of_passengers);
-        updateNumberOfPassengers(Integer.toString(1));
+        controller.getNumOfPassengers();
+//        updateNumberOfPassengers(Integer.toString(1));
 
         addPassengerButton = (ImageButton) view.findViewById(R.id.btn_add_rider);
         addPassengerButton.setOnClickListener(this);

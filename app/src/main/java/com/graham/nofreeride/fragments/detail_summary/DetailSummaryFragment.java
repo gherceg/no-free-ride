@@ -52,16 +52,6 @@ public class DetailSummaryFragment extends Fragment implements View.OnClickListe
     CheckBox insuranceCheckBox;
     EditTextEnterEvent addParkingEditText;
 
-
-    private double mPricePerRider;
-    private double mDistance;
-    private int mNumOfPassengers;
-
-    private boolean mIncludeMaintenance;
-    private boolean mIncludeInsurance;
-    private String mMaintenanceCost;
-    private String mInsuranceCost;
-
     private GestureDetector mDetector;
     private double scrollDistanceY = 0;
 
@@ -100,6 +90,8 @@ public class DetailSummaryFragment extends Fragment implements View.OnClickListe
         super.onResume();
         double parkingCost = ((HomeActivity)getActivity()).getParkingCost();
         controller.setParkingCost(parkingCost);
+
+        // Set the number of passengers currently set in the controller
         int passengers = ((HomeActivity)getActivity()).getNumOfPassengers();
         // handle logic for passengers at min or max limits
         controller.setNumOfPassengers(passengers);
@@ -109,19 +101,9 @@ public class DetailSummaryFragment extends Fragment implements View.OnClickListe
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle args = this.getArguments();
-        int passengers = args.getInt("passengers");
         double distance = args.getDouble("distance");
 
-        // extract preferences
-        mIncludeInsurance = sharedPreferences.getBoolean(getString(R.string.pref_include_insurance_key), false);
-        mInsuranceCost = sharedPreferences.getString(getString(R.string.pref_insurance_price_key), "0.00");
-//         = Boolean.parseBoolean(includeInsurance);
-        mIncludeMaintenance = sharedPreferences.getBoolean(getString(R.string.pref_include_maintenance_key), false);
-        mMaintenanceCost = sharedPreferences.getString(getString(R.string.pref_maintenance_key), "0.00");
-
-        controller = new DetailSummaryController(getContext(), this, distance, passengers);
-
-
+        controller = new DetailSummaryController(getContext(), this, distance);
     }
 
     @Nullable
@@ -153,26 +135,26 @@ public class DetailSummaryFragment extends Fragment implements View.OnClickListe
         hideDetailSummaryButton.setOnClickListener(this);
 
         numOfPassengersTextView = (TextView) view.findViewById(R.id.tv_detail_num_of_passengers);
-        numOfPassengersTextView.setText(String.format(Locale.US, "%d", mNumOfPassengers));
+        numOfPassengersTextView.setText(String.format(Locale.US, "%d", controller.getNumOfPassengers()));
 
         pricePerRiderTextView = (TextView) view.findViewById(R.id.tv_detail_price_per_rider);
-        pricePerRiderTextView.setText(String.format(Locale.US, "%.2f", mPricePerRider));
+        pricePerRiderTextView.setText(String.format(Locale.US, "%.2f", controller.getPricePerRider()));
 
         insuranceCheckBox = (CheckBox) view.findViewById(R.id.cb_insurance);
         // need to parse insurance price from monthly price and miles driven
-        double insurancePerMonth = Double.parseDouble(mInsuranceCost);
+        double insurancePerMonth = controller.getInsurancePrice();
         double insurancePercent = insurancePerMonth * Constants.CONSTANTS.PCT_INSURANCE * controller.getDistance();
         String insurance = String.format(Locale.US, "Insurance ($%.2f)", insurancePercent);
         insuranceCheckBox.setText(insurance);
         insuranceCheckBox.setOnClickListener(this);
-        insuranceCheckBox.setChecked(mIncludeInsurance);
+        insuranceCheckBox.setChecked(controller.isIncludeInsurance());
 
         maintenanceCheckBox = (CheckBox) view.findViewById(R.id.cb_maintenance);
-        double maintenceCost = Double.parseDouble(mMaintenanceCost) * controller.getDistance();
+        double maintenceCost = controller.getMaintenancePrice() * controller.getDistance();
         String maintenanceText = String.format(Locale.US, "Maintenance ($%.2f)", maintenceCost);
         maintenanceCheckBox.setText(maintenanceText);
         maintenanceCheckBox.setOnClickListener(this);
-        maintenanceCheckBox.setChecked(mIncludeMaintenance);
+        maintenanceCheckBox.setChecked(controller.isIncludeMaintenance());
 
         addParkingEditText = (EditTextEnterEvent) view.findViewById(R.id.et_add_parking);
         addParkingEditText.setOnEditTextImeBackListener(this);
@@ -305,4 +287,5 @@ public class DetailSummaryFragment extends Fragment implements View.OnClickListe
 //        }
 //
 //    }
+
 }

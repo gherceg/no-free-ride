@@ -58,7 +58,7 @@ public class HomeActivity extends AppCompatActivity implements HomeFragment.Home
         setSupportActionBar(toolbar);
         if(getSupportActionBar() != null) {
             getSupportActionBar().setElevation(0);
-            getSupportActionBar().setLogo(R.mipmap.ic_car_icon_round);
+            getSupportActionBar().setLogo(R.mipmap.ic_app_icon);
             getSupportActionBar().setTitle("");
         }
 
@@ -84,19 +84,20 @@ public class HomeActivity extends AppCompatActivity implements HomeFragment.Home
         @Override
         public void onReceive(Context context, Intent intent) {
             if(intent.getAction().equals(Constants.ACTION.SENDLOCATIONS_ACTION)) {
-                Log.d(TAG, "onReceive: locations were received by activity");
+//                Log.d(TAG, "onReceive: locations were received by activity");
                 ArrayList<LatLng> latLngs = intent.getParcelableArrayListExtra("locations");
                 double distance = intent.getDoubleExtra("distance",0);
                 // if locations are empty don't move to the next page
                 if(latLngs.isEmpty()) {
-                    Log.d(TAG, "onReceive: no locations exist yet..not showing summary page");
-                    Toast.makeText(getApplicationContext(),"Cannot find location",Toast.LENGTH_SHORT).show();
+//                    Log.d(TAG, "onReceive: no locations exist yet..not showing summary page");
+                    Toast.makeText(getApplicationContext(),"Not enough data",Toast.LENGTH_SHORT).show();
                 } else {
                     showSummaryPage(latLngs,distance);
                 }
             }
             else if(intent.getAction().equals(Constants.ACTION.STOPMESSAGE_ACTION)) {
-                Log.d(TAG, "onReceive: received a stop message");
+//                Log.d(TAG, "onReceive: received a stop message");
+
                 // tell the home fragment to update accordingly
                 homeFragment.driveStoppedExternally();
             }

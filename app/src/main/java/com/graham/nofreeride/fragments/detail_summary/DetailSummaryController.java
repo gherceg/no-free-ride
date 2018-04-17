@@ -25,11 +25,29 @@ public class DetailSummaryController {
     private double mMPG;
     // price per gallon
     private double mPPG;
+
+    public double getMaintenancePrice() {
+        return mMaintenancePrice;
+    }
+
+    public double getInsurancePrice() {
+        return mInsurancePrice;
+    }
+
     // maintenance
-    private double mMaintenanceCosts;
+    private double mMaintenancePrice;
+
+    public boolean isIncludeMaintenance() {
+        return mIncludeMaintenance;
+    }
+
+    public boolean isIncludeInsurance() {
+        return mIncludeInsurance;
+    }
+
     private boolean mIncludeMaintenance;
     // insurance
-    private double mInsuranceCosts;
+    private double mInsurancePrice;
     private boolean mIncludeInsurance;
 
     private boolean mAddButtonDisabled;
@@ -55,6 +73,12 @@ public class DetailSummaryController {
         calculatePricePerRider();
     }
 
+    private double pricePerRider;
+
+    public double getPricePerRider() {
+        return pricePerRider;
+    }
+
     private double parkingCost;
     public double getParkingCost() {
         return parkingCost;
@@ -66,28 +90,29 @@ public class DetailSummaryController {
         calculatePricePerRider();
     }
 
-    public DetailSummaryController(Context context, DetailSummaryContract.view view, double distance, int passengers) {
+    /**
+     * Constructor for DetailSummaryController
+     * @param context - context of activity that created fragment
+     * @param view - view that created the controller, responsible for handling logic for
+     * @param distance - distance
+     */
+    public DetailSummaryController(Context context, DetailSummaryContract.view view, double distance) {
         mContext = context;
         mView = view;
         this.distance = distance;
-        numOfPassengers = passengers;
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         mMPG = Double.parseDouble(sharedPreferences.getString(mContext.getString(R.string.pref_mpg_key),"0"));
-
+        mPPG = Double.parseDouble(sharedPreferences.getString(mContext.getString(R.string.pref_ppg_key), "0"));
+        mInsurancePrice = Double.parseDouble(sharedPreferences.getString(context.getString(R.string.pref_insurance_price_key),"0"));
+        mMaintenancePrice = Double.parseDouble(sharedPreferences.getString(context.getString(R.string.pref_maintenance_key),"0"));
+        mIncludeInsurance = sharedPreferences.getBoolean(context.getString(R.string.pref_include_insurance_key),false);
+        mIncludeMaintenance = sharedPreferences.getBoolean(context.getString(R.string.pref_include_maintenance_key),false);
     }
 
-    private void checkNumberOfPassengers() {
-        if(numOfPassengers >= Constants.CONSTANTS.MAX_PASSENGERS) {
-            mView.disableAddPassengerButton();
-            mAddButtonDisabled = true;
-        } else if(numOfPassengers <= Constants.CONSTANTS.MIN_PASSENGERS) {
-            mView.disableRemovePassengerButton();
-            mRemoveButtonDisabled = true;
-        }
-    }
-
-
+    /**
+     * Method called from view to handle adding passengers
+     */
     public void onAddPassengerButtonPressed() {
         setNumOfPassengers(numOfPassengers + 1);
 
@@ -97,6 +122,9 @@ public class DetailSummaryController {
         }
     }
 
+    /**
+     * Method called from view to handle removing passenger
+     */
     public void onRemovePassengerButtonPressed() {
         setNumOfPassengers(numOfPassengers - 1);
 
@@ -107,13 +135,26 @@ public class DetailSummaryController {
     }
 
     /**
+     * Method to check if current number of passengers equals min or max limit
+     */
+    private void checkNumberOfPassengers() {
+        if(numOfPassengers >= Constants.CONSTANTS.MAX_PASSENGERS) {
+            mView.disableAddPassengerButton();
+            mAddButtonDisabled = true;
+        } else if(numOfPassengers <= Constants.CONSTANTS.MIN_PASSENGERS) {
+            mView.disableRemovePassengerButton();
+            mRemoveButtonDisabled = true;
+        }
+    }
+
+    /**
      * Method to handle update preferences when maintenance checkbox is changed
      * @param checked - boolean for whether checkbox is checked or not
      */
     public void onMaintenanceCheckBoxChanged(boolean checked) {
         // update class var
         mIncludeMaintenance = checked;
-        // update shared preferences
+        // update shared preferences (TODO: leave default settings alone?)
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(mContext.getString(R.string.pref_include_maintenance_key),checked);
         editor.apply();
@@ -128,7 +169,7 @@ public class DetailSummaryController {
     public void onInsuranceCheckBoxChanged(boolean checked) {
         // update class var
         mIncludeInsurance = checked;
-        // update shared preferences
+        // update shared preferences (TODO: leave default settings alone?)
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(mContext.getString(R.string.pref_include_insurance_key),checked);
         editor.apply();
@@ -140,10 +181,11 @@ public class DetailSummaryController {
      * Method to calculate price per rider and update the view
      */
     public void calculatePricePerRider() {
-        double insurancePrice = mIncludeInsurance ? mInsuranceCosts : 0;
-        double maintenancePrice = mIncludeMaintenance ? mMaintenanceCosts : 0;
-        double price = RideCalculator.calculatePricePerRider(numOfPassengers,mMPG,mPPG,distance,insurancePrice,maintenancePrice,parkingCost);
-        String formattedPrice = String.format(Locale.US, "$%.2f",price);
+        double insurancePrice = mIncludeInsurance ? mInsurancePrice : 0;
+        double maintenancePrice = mIncludeMaintenance ? mMaintenancePrice : 0;
+        pricePerRider = RideCalculator.calculatePricePerRider(numOfPassengers,mMPG,mPPG,distance,insurancePrice,maintenancePrice,parkingCost);
+        // format price
+        String formattedPrice = String.format(Locale.US, "$%.2f",pricePerRider);
         // update UI
         mView.updatePricePerRiderText(formattedPrice);
     }

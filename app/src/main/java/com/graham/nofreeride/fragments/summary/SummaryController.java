@@ -35,14 +35,31 @@ public class SummaryController {
         return pricePerRider;
     }
 
-    private double mMpg;
-    private double mPpg;
+
+    // flags to include insurance and maintenance
     private boolean mIncludeInsurance;
     private boolean mIncludeMaintenance;
+
+    public double getInsurancePrice() {
+        return mInsurancePrice;
+    }
+
+    public double getMaintenancePrice() {
+        return mMaintenancePrice;
+    }
+
+    // vars to hold shared preferences values
+    // insurance price per year
     private double mInsurancePrice;
+    // avg maintenance cost per mile
     private double mMaintenancePrice;
+    // gas rate
+    private double mMpg;
+    // price for gas
+    private double mPpg;
 
 
+    // getter and setter for number of passengers
     private int numOfPassengers;
     public int getNumOfPassengers() {
         return numOfPassengers;
@@ -81,13 +98,8 @@ public class SummaryController {
 
         // get shared preferences
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        refreshSharedPreferences();
 
-        mMpg = Double.parseDouble(sharedPreferences.getString(context.getString(R.string.pref_mpg_key),"0"));
-        mPpg = Double.parseDouble(sharedPreferences.getString(context.getString(R.string.pref_ppg_key),"0"));
-        mInsurancePrice = Double.parseDouble(sharedPreferences.getString(context.getString(R.string.pref_insurance_price_key),"0"));
-        mMaintenancePrice = Double.parseDouble(sharedPreferences.getString(context.getString(R.string.pref_maintenance_key),"0"));
-        mIncludeInsurance = sharedPreferences.getBoolean(context.getString(R.string.pref_include_insurance_key),false);
-        mIncludeMaintenance = sharedPreferences.getBoolean(context.getString(R.string.pref_include_maintenance_key),false);
 
     }
 
@@ -95,11 +107,10 @@ public class SummaryController {
     public void calculatePricePerRider() {
         double insurancePrice = mIncludeInsurance ? mInsurancePrice : 0;
         double maintenancePrice = mIncludeMaintenance ? mMaintenancePrice : 0;
-        double price = RideCalculator.calculatePricePerRider(numOfPassengers,mMpg,mPpg,distance,insurancePrice,maintenancePrice,parkingCost);
-        pricePerRider = price;
+        double pricePerRider = RideCalculator.calculatePricePerRider(numOfPassengers,mMpg,mPpg,distance,insurancePrice,maintenancePrice,parkingCost);
 
         // make formatted string verison of price
-        String formattedPrice = String.format(Locale.US, "$%.2f",price);
+        String formattedPrice = String.format(Locale.US, "$%.2f",pricePerRider);
         // update UI
         view.updatePriceTextView(formattedPrice);
     }
@@ -130,5 +141,14 @@ public class SummaryController {
             view.disableRemovePassengerButton();
             mRemoveButtonDisabled = true;
         }
+    }
+
+    public void refreshSharedPreferences() {
+        mMpg = Double.parseDouble(sharedPreferences.getString(context.getString(R.string.pref_mpg_key),"0"));
+        mPpg = Double.parseDouble(sharedPreferences.getString(context.getString(R.string.pref_ppg_key),"0"));
+        mInsurancePrice = Double.parseDouble(sharedPreferences.getString(context.getString(R.string.pref_insurance_price_key),"0"));
+        mMaintenancePrice = Double.parseDouble(sharedPreferences.getString(context.getString(R.string.pref_maintenance_key),"0"));
+        mIncludeInsurance = sharedPreferences.getBoolean(context.getString(R.string.pref_include_insurance_key),false);
+        mIncludeMaintenance = sharedPreferences.getBoolean(context.getString(R.string.pref_include_maintenance_key),false);
     }
 }
