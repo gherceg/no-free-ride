@@ -4,15 +4,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import androidx.appcompat.widget.Toolbar;
+
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.Window;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -188,7 +187,7 @@ public class HomeActivity extends AppCompatActivity implements HomeFragment.Home
      * @param distance - total distance traveled
      */
     private void showSummaryPage(ArrayList<LatLng> latLngs, double distance) {
-        Log.d(LOG_TAG, "showSummaryPage: trying to show summary page");
+//        Log.d(LOG_TAG, "showSummaryPage: trying to show summary page");
         summaryFragment = SummaryFragment.newInstance(distance,latLngs);
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.frag_container, summaryFragment).addToBackStack(null).commit();
@@ -229,7 +228,7 @@ public class HomeActivity extends AppCompatActivity implements HomeFragment.Home
         // set number of passengers on Activity
         setNumOfPassengers(passengers);
 
-        Log.d("Home_Activity", "onDetailSummarySwipeDown: trying to pop the stack");
+//        Log.d("Home_Activity", "onDetailSummarySwipeDown: trying to pop the stack");
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.popBackStack();
 

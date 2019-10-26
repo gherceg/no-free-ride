@@ -1,26 +1,18 @@
 package com.graham.nofreeride.fragments.summary;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.gesture.Gesture;
-import android.location.Location;
-import android.media.Image;
 import android.os.Bundle;
-import android.os.Parcel;
-import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.NumberPicker;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -35,10 +27,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.RoundCap;
 import com.graham.nofreeride.R;
 import com.graham.nofreeride.activities.HomeActivity;
-import com.graham.nofreeride.fragments.home.HomeFragment;
-import com.graham.nofreeride.utils.ParcelableLocations;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Locale;
 

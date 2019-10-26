@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1017566681262",
+    "firebase_url": "https://nofreeride-195223.firebaseio.com",
+    "project_id": "nofreeride-195223",
+    "storage_bucket": "nofreeride-195223.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1017566681262:android:6f5b8ebd9c4cb936",
+        "android_client_info": {
+          "package_name": "com.graham.nofreeride"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1017566681262-7amii2hvcr46ikrq5mcsf8lpvco5fotc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.graham.nofreeride",
+            "certificate_hash": "9a281e783daae73dcbcd707927baceeedf577412"
+          }
+        },
+        {
+          "client_id": "1017566681262-cge5p19tkpfso2mt69e2qbbm112e38qj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB0HACoVDjO3nxWi7AktYOtubkEiUfVhgY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1017566681262-cge5p19tkpfso2mt69e2qbbm112e38qj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
