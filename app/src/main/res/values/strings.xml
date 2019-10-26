@@ -24,4 +24,6 @@
     <string name="mpg_caps">MPG</string>
     <string name="gas_price">Gas Price</string>
     <string name="insurance">Insurance</string>
+    <string name="end_drive">End Drive</string>
+    <string name="driving">Driving</string>
 </resources>
