@@ -21,4 +21,7 @@
     <string name="pref_include_insurance_key">include_insurance</string>
     <string name="pref_include_insurance_summary">Include insurance costs</string>
     <string name="add_parking">Add Parking</string>
+    <string name="mpg_caps">MPG</string>
+    <string name="gas_price">Gas Price</string>
+    <string name="insurance">Insurance</string>
 </resources>

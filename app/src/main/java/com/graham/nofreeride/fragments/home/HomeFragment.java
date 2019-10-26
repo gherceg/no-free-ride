@@ -148,7 +148,7 @@ public class HomeFragment extends Fragment implements HomeContract.view, View.On
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if(view == null) {
             view = inflater.inflate(R.layout.fragment_home, container, false);
-            insurancePriceTextView = (TextView)view.findViewById(R.id.tv_insurance_per_month);
+            insurancePriceTextView = (TextView)view.findViewById(R.id.insurance_value);
             insurancePriceTextView.setOnClickListener(this);
             milesPerGallonTextView = (TextView)view.findViewById(R.id.tv_miles_per_gallon);
             milesPerGallonTextView.setOnClickListener(this);
@@ -205,7 +205,7 @@ public class HomeFragment extends Fragment implements HomeContract.view, View.On
                         mMPG,
                         mPPG);
                 break;
-            case R.id.tv_insurance_per_month:
+            case R.id.insurance_value:
             case R.id.tv_miles_per_gallon:
             case R.id.tv_price_per_gallon:
                 Intent startSettingsActivity = new Intent(getActivity(), SettingsActivity.class);

@@ -7,6 +7,112 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryDark">
 
+    <LinearLayout
+        android:id="@+id/metrics_container"
+        android:background="@color/colorPrimary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:orientation="horizontal"
+        android:gravity="fill_horizontal">
+
+        <LinearLayout
+            android:id="@+id/mpg_container"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tv_miles_per_gallon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textSize="50sp"
+                android:textColor="@color/white"
+                tools:text="20" />
+
+            <TextView
+                android:id="@+id/mpg_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mpg_caps"
+                android:textColor="@color/white"
+                android:textAlignment="center"
+                android:textSize="20sp"/>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/gas_price_container"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tv_price_per_gallon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textSize="50sp"
+                android:textColor="@color/white"
+                tools:text="$3.63" />
+
+            <TextView
+                android:id="@+id/textView8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/gas_price"
+                android:textColor="@color/white"
+                android:textAlignment="center"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/insurance_container"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/insurance_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textSize="50sp"
+                android:textColor="@color/white"
+                tools:text="$60" />
+
+            <TextView
+                android:id="@+id/insurance_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/insurance"
+                android:textColor="@color/white"
+                android:textAlignment="center"
+                android:textSize="20sp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
     <Button
         android:id="@+id/btn_toggle_drive"
         android:layout_width="201dp"
@@ -26,109 +132,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.347" />
 
-    <View
-        android:layout_width="0dp"
-        android:layout_height="138dp"
-        android:background="@color/colorPrimary"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/tv_miles_per_gallon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="16dp"
-        android:textAlignment="center"
-        android:textSize="50sp"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/gl_one_third"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        tools:text="20" />
-
-    <TextView
-        android:id="@+id/tv_price_per_gallon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:textSize="50sp"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toTopOf="@+id/textView7"
-        app:layout_constraintLeft_toRightOf="@+id/gl_one_third"
-        app:layout_constraintRight_toLeftOf="@+id/gl_two_thirds"
-        app:layout_constraintTop_toTopOf="@+id/tv_miles_per_gallon"
-        app:layout_constraintVertical_bias="0.0"
-        tools:text="$3.63" />
-
-
-    <TextView
-        android:id="@+id/tv_insurance_per_month"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:textSize="50sp"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_price_per_gallon"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/gl_two_thirds"
-        app:layout_constraintTop_toTopOf="@+id/tv_price_per_gallon"
-        app:layout_constraintVertical_bias="1.0"
-        tools:text="$60" />
-
-    <TextView
-        android:id="@+id/textView7"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="MPG"
-        android:textColor="@color/white"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="@+id/tv_miles_per_gallon"
-        app:layout_constraintStart_toStartOf="@+id/tv_miles_per_gallon"
-        app:layout_constraintTop_toBottomOf="@+id/tv_miles_per_gallon" />
-
-    <TextView
-        android:id="@+id/textView8"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Gas Price"
-        android:textColor="@color/white"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="@+id/tv_price_per_gallon"
-        app:layout_constraintHorizontal_bias="0.561"
-        app:layout_constraintStart_toStartOf="@+id/tv_price_per_gallon"
-        app:layout_constraintTop_toBottomOf="@+id/tv_price_per_gallon" />
-
-    <TextView
-        android:id="@+id/textView9"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Insurance"
-        android:textColor="@color/white"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="@+id/tv_insurance_per_month"
-        app:layout_constraintStart_toStartOf="@+id/tv_insurance_per_month"
-        app:layout_constraintTop_toBottomOf="@+id/tv_insurance_per_month" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/gl_one_third"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.3" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/gl_two_thirds"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.7" />
 
     <TextView
         android:id="@+id/tv_total_distance"
